@@ -5,3 +5,5 @@ export default abstract class Component implements component {
 
 	abstract render(): string;
 }
+
+export type ComponentConstructor = new () => Component;
