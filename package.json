@@ -1,0 +1,11 @@
+{
+  "name": "signature",
+  "version": "0.0.1",
+  "description": "",
+  "license": "ISC",
+  "author": "PinBib",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+  }
+}
