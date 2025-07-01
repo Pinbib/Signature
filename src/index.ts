@@ -1,5 +1,5 @@
-function Signature(selector: string): void {
-	console.log(selector);
-}
+import Signature from './Signature.js';
 
-export default Signature;
+export default function (): Signature {
+	return new Signature();
+}

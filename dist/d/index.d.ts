@@ -1,2 +1,2 @@
-declare function Signature(selector: string): void;
-export default Signature;
+import Signature from './Signature.js';
+export default function (): Signature;

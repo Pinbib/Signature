@@ -1,4 +1,4 @@
-function Signature(selector) {
-    console.log(selector);
+import Signature from './Signature.js';
+export default function () {
+    return new Signature();
 }
-export default Signature;
