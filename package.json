@@ -1,12 +1,16 @@
 {
   "name": "signature",
   "version": "0.0.1",
-  "description": "",
+  "description": "Primitive and fast framework for rendering web interfaces",
   "license": "ISC",
   "author": "PinBib",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/d/index.d.ts",
+  "module": "./dist/index.js",
   "scripts": {
+	"build": "tsc -p tsconfig.json",
+	"watch": "tsc -p tsconfig.json --watch"
   },
   "files": [
 	"dist",
@@ -14,5 +18,40 @@
 	"README.md",
 	"LICENSE",
 	"tsconfig.json"
-  ]
+  ],
+  "keywords": [
+	"UI",
+	"web",
+	"framework",
+	"rendering",
+	"Signature",
+	"component",
+	"frontend"
+  ],
+  "exports": {
+	".": {
+	  "import": "./dist/index.js",
+	  "types": "./dist/d/index.d.ts",
+	  "browser": "./dist/index.js",
+	  "default": "./dist/index.js"
+	},
+	"./Component": {
+	  "import": "./dist/Component.js",
+	  "types": "./dist/d/Component.d.ts",
+	  "browser": "./dist/Component.js",
+	  "default": "./dist/Component.js"
+	},
+	"./types/Component": {
+	  "import": "./dist/types/Component.js",
+	  "types": "./dist/d/types/Component.d.ts",
+	  "browser": "./dist/types/Component.js",
+	  "default": "./dist/types/Component.js"
+	},
+	"./Signature": {
+	  "import": "./dist/Signature.js",
+	  "types": "./dist/d/Signature.d.ts",
+	  "browser": "./dist/Signature.js",
+	  "default": "./dist/Signature.js"
+	}
+  }
 }
