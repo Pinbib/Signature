@@ -1,6 +1,6 @@
 {
   "name": "web-signature",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Primitive and fast framework for rendering web interfaces",
   "license": "ISC",
   "author": "PinBib",
@@ -9,10 +9,11 @@
   "types": "./dist/d/index.d.ts",
   "module": "./dist/index.js",
   "scripts": {
-	"build": "tsc -p tsconfig.json",
+	"build": "tsc -p tsconfig.json && rollup -c rollup.config.js",
 	"watch": "tsc -p tsconfig.json --watch"
   },
   "files": [
+	"bundle",
 	"dist",
 	"src",
 	"README.md",
@@ -52,6 +53,16 @@
 	  "types": "./dist/d/Signature.d.ts",
 	  "browser": "./dist/Signature.js",
 	  "default": "./dist/Signature.js"
+	},
+	"./bundle": {
+	  "import": "./bundle/index.js",
+	  "browser": "./bundle/index.js",
+	  "default": "./bundle/index.js"
 	}
+  },
+  "devDependencies": {
+	"@rollup/plugin-node-resolve": "^16.0.1",
+	"@rollup/plugin-terser": "^0.4.4",
+	"rollup": "^4.44.2"
   }
 }
