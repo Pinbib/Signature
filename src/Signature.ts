@@ -13,7 +13,12 @@ export default class Signature {
 			throw new Error(`Element not found for selector: ${selector}`);
 		}
 
-		this.render(mainFrame);
+		let secondaryFrame = document.createElement("div");
+		secondaryFrame.innerHTML = mainFrame.innerHTML;
+
+		this.render(secondaryFrame);
+
+		mainFrame.replaceChildren(...Array.from(secondaryFrame.childNodes));
 	}
 
 	public add(component: ComponentConstructor): void {
