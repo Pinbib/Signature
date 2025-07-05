@@ -6,6 +6,10 @@ export default class Signature {
 	constructor() {
 	}
 
+	/**
+	 * Starts rendering in the specified area.
+	 * @param {string} selector The selector of the element where the signature should be rendered.
+	 */
 	public contact(selector: string): void {
 		let mainFrame = document.querySelector(selector);
 
@@ -21,6 +25,10 @@ export default class Signature {
 		mainFrame.replaceChildren(...Array.from(secondaryFrame.childNodes));
 	}
 
+	/**
+	 * Adds a component to the signature.
+	 * @param {ComponentConstructor} component The component to add.
+	 */
 	public add(component: ComponentConstructor): void {
 		if (this.components[component.name]) {
 			console.warn(new Error(`Component with name ${component.name} already exists.`));
@@ -35,6 +43,10 @@ export default class Signature {
 
 			frame.querySelectorAll(com).forEach((el: Element) => {
 				let renderer: Component = new component();
+
+				if (el instanceof HTMLElement) {
+					renderer.data = el.innerHTML.trim();
+				}
 
 				let body = document.createElement("template");
 				body.innerHTML = renderer.render().trim();
