@@ -13,14 +13,7 @@ export default class Signature {
 			throw new Error(`Element not found for selector: ${selector}`);
 		}
 
-		Object.keys(this.components).forEach((com: string) => {
-			let component = this.components[com];
-
-			mainFrame.querySelectorAll(com).forEach((el: Element) => {
-				let renderer: Component = new component();
-				el.innerHTML = renderer.render();
-			});
-		});
+		this.render(mainFrame);
 	}
 
 	public add(component: ComponentConstructor): void {
@@ -29,5 +22,22 @@ export default class Signature {
 		}
 
 		this.components[component.name] = component;
+	}
+
+	private render(frame: Element): void {
+		Object.keys(this.components).forEach((com: string) => {
+			let component = this.components[com];
+
+			frame.querySelectorAll(com).forEach((el: Element) => {
+				let renderer: Component = new component();
+
+				let body = document.createElement("template");
+				body.innerHTML = renderer.render().trim();
+
+				this.render(body);
+
+				el.replaceWith(body.content);
+			});
+		});
 	}
 }
