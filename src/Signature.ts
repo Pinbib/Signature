@@ -38,10 +38,10 @@ export default class Signature {
 	}
 
 	private render(frame: Element): void {
-		Object.keys(this.components).forEach((com: string) => {
+		for (const com of Object.keys(this.components)) {
 			let component = this.components[com];
 
-			frame.querySelectorAll(com).forEach((el: Element) => {
+			for (const el of Array.from(frame.querySelectorAll(com))) {
 				let renderer: Component = new component();
 
 				if (el instanceof HTMLElement) {
@@ -51,10 +51,18 @@ export default class Signature {
 				let body = document.createElement("template");
 				body.innerHTML = renderer.render().trim();
 
+				if (body.content.children.length > 1) {
+					throw new Error(`Component '${com}' must render a single root element.`);
+				}
+
 				this.render(body);
 
+				let mountEl: Element = body.content.firstElementChild as Element;
+
 				el.replaceWith(body.content);
-			});
-		});
+
+				renderer.onMount(mountEl);
+			}
+		}
 	}
 }

@@ -5,6 +5,8 @@ export default abstract class Component implements component {
 	data?: string;
 
 	abstract render(): string;
+
+	abstract onMount(el: Element): void;
 }
 
 export type ComponentConstructor = new () => Component;

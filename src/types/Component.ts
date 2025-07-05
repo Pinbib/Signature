@@ -11,6 +11,8 @@ interface Component {
 	 * @returns {string} The rendered component as a string.
 	 */
 	render(): string;
+
+	onMount(el: Element): void;
 }
 
 export default Component;
