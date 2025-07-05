@@ -6,6 +6,10 @@ export default abstract class Component implements component {
 
 	abstract render(): string;
 
+	abstract onInit(): void;
+
+	abstract onRender(): void;
+
 	abstract onMount(el: Element): void;
 }
 
