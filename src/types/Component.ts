@@ -4,7 +4,7 @@ interface Component {
 	/**
 	 * Optional content that is specified in the component tag.
 	 */
-	data?: string;
+	content?: string;
 
 	/**
 	 * Returns the component as a string.

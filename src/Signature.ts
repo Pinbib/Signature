@@ -46,7 +46,7 @@ export default class Signature {
 				renderer.onInit?.(); // lifecycle hook
 
 				if (el instanceof HTMLElement) {
-					renderer.data = el.innerHTML.trim();
+					renderer.content = el.innerHTML.trim();
 				}
 
 				let body = document.createElement("template");
