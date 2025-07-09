@@ -43,7 +43,7 @@ export default class Signature {
 
 			for (const el of Array.from(frame.querySelectorAll(com))) {
 				let renderer: Component = new component();
-				renderer.onInit(); // lifecycle hook
+				renderer.onInit?.(); // lifecycle hook
 
 				if (el instanceof HTMLElement) {
 					renderer.data = el.innerHTML.trim();
@@ -57,13 +57,13 @@ export default class Signature {
 				}
 
 				this.render(body);
-				renderer.onRender(); // lifecycle hook
+				renderer.onRender?.(); // lifecycle hook
 
 				let mountEl: Element = body.content.firstElementChild as Element;
 
 				el.replaceWith(body.content);
 
-				renderer.onMount(mountEl); // lifecycle hook
+				renderer.onMount?.(mountEl); // lifecycle hook
 			}
 		}
 	}
