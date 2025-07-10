@@ -1,7 +1,11 @@
 import Component, {ComponentConstructor} from "./Component.js";
+import Ref from "./Ref.js";
+
+let _counter = 0;
 
 export default class Signature {
 	private components: Record<string, ComponentConstructor> = {};
+	private refs: Record<string, Ref> = {};
 
 	constructor() {
 	}
@@ -37,6 +41,10 @@ export default class Signature {
 		this.components[component.name] = component;
 	}
 
+	public ref(name: string): Element | undefined {
+		return this.refs[name]?.element;
+	}
+
 	private render(frame: Element): void {
 		for (const com of Object.keys(this.components)) {
 			let component = this.components[com];
@@ -60,6 +68,24 @@ export default class Signature {
 				renderer.onRender?.(); // lifecycle hook
 
 				let mountEl: Element = body.content.firstElementChild as Element;
+
+				if (el.hasAttribute("ref")) {
+					let refName = el.getAttribute("ref") as string;
+
+					_counter++;
+
+					if (refName === "") {
+						refName = `r${_counter}${Math.random().toString(36).substring(2, 15)}${_counter}`;
+					}
+
+					if (this.refs[refName]) {
+						throw new Error(`Ref with name ${refName} already exists.`);
+					}
+
+					this.refs[refName] = new Ref(renderer, mountEl);
+
+					mountEl.setAttribute("ref", refName);
+				}
 
 				el.replaceWith(body.content);
 
