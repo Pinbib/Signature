@@ -41,8 +41,33 @@ export default class Signature {
 		this.components[component.name] = component;
 	}
 
+	/**
+	 * Returns a reference.
+	 * @param {string} name The name of the reference.
+	 * @return {Element | undefined} The element associated with the reference, or undefined if it does not exist.
+	 */
 	public ref(name: string): Element | undefined {
 		return this.refs[name]?.element;
+	}
+
+	/**
+	 * Contacts the Component.onContact method through its reference.
+	 * @param {string} name The name of the reference.
+	 * @template P The type of the properties to pass to the component's onContact method.
+	 * @param {...P[]} props The properties to pass to the component's onContact method.
+	 * @template T The type of the return value of the component's onContact method.
+	 * @returns {T} The return value of the component's onContact method.
+	 */
+	public contactWith<P extends any[], T>(name: string, ...props: P): T {
+		let ref = this.refs[name];
+
+		if (!ref) {
+			throw new Error(`Ref with name ${name} does not exist.`);
+		}
+
+		let instance = ref.instance;
+
+		return instance.onContact<P, T>(...props);
 	}
 
 	private render(frame: Element): void {

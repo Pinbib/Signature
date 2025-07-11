@@ -27,6 +27,15 @@ interface Component {
 	 * @param {Element} el The element to which the component is mounted.
 	 */
 	onMount(el: Element): void;
+
+	/**
+	 * Lifecycle hook called via Signature.contactWith
+	 * @template P
+	 * @param {...P[]} props
+	 * @template T What should this hook return.
+	 * @returns {T} What should this hook return.
+	 */
+	onContact<P extends any[], T>(...props: P): T;
 }
 
 export default Component;

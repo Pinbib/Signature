@@ -11,6 +11,8 @@ export default abstract class Component implements component {
 	abstract onRender(): void;
 
 	abstract onMount(el: Element): void;
+
+	abstract onContact<P extends any[], T>(...props: P): T;
 }
 
 export type ComponentConstructor = new () => Component;
