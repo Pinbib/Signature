@@ -15,18 +15,18 @@ interface Component {
 	/**
 	 * Lifecycle hook that is called when the component is initialized.
 	 */
-	onInit(): void;
+	onInit?(): void;
 
 	/**
 	 * Lifecycle hook that is called when the component is rendered.
 	 */
-	onRender(): void;
+	onRender?(): void;
 
 	/**
 	 * Lifecycle hook that is called when the component is mounted to the DOM.
 	 * @param {Element} el The element to which the component is mounted.
 	 */
-	onMount(el: Element): void;
+	onMount?(el: Element): void;
 
 	/**
 	 * Lifecycle hook called via Signature.contactWith
@@ -35,7 +35,7 @@ interface Component {
 	 * @template T What should this hook return.
 	 * @returns {T} What should this hook return.
 	 */
-	onContact<P extends any[], T>(...props: P): T;
+	onContact?(...props: any[]): any;
 }
 
 export default Component;

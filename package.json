@@ -4,6 +4,10 @@
   "description": "Primitive and fast framework for rendering web interfaces",
   "license": "ISC",
   "author": "PinBib",
+  "repository": {
+	"type": "git",
+	"url": "github.com/Pinbib/Signature"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/d/index.d.ts",

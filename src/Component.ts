@@ -6,13 +6,13 @@ export default abstract class Component implements component {
 
 	abstract render(): string;
 
-	abstract onInit(): void;
+	abstract onInit?(): void;
 
-	abstract onRender(): void;
+	abstract onRender?(): void;
 
-	abstract onMount(el: Element): void;
+	abstract onMount?(el: Element): void;
 
-	abstract onContact<P extends any[], T>(...props: P): T;
+	abstract onContact?(...props: any[]): any;
 }
 
 export type ComponentConstructor = new () => Component;

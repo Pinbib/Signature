@@ -58,7 +58,7 @@ export default class Signature {
 	 * @template T The type of the return value of the component's onContact method.
 	 * @returns {T} The return value of the component's onContact method.
 	 */
-	public contactWith<P extends any[], T>(name: string, ...props: P): T {
+	public contactWith(name: string, ...props: any[]): any {
 		let ref = this.refs[name];
 
 		if (!ref) {
@@ -67,7 +67,7 @@ export default class Signature {
 
 		let instance = ref.instance;
 
-		return instance.onContact<P, T>(...props);
+		return instance.onContact?.(...props);
 	}
 
 	private render(frame: Element): void {
