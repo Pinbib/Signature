@@ -15,13 +15,13 @@ export default class Signature {
 	 * @param {string} selector The selector of the element where the signature should be rendered.
 	 */
 	public contact(selector: string): void {
-		let mainFrame = document.querySelector(selector);
+		const mainFrame = document.querySelector(selector);
 
 		if (!mainFrame) {
 			throw new Error(`Element not found for selector: ${selector}`);
 		}
 
-		let secondaryFrame = document.createElement("div");
+		const secondaryFrame = document.createElement("div");
 		secondaryFrame.innerHTML = mainFrame.innerHTML;
 
 		this.render(secondaryFrame);
@@ -59,30 +59,58 @@ export default class Signature {
 	 * @returns {T} The return value of the component's onContact method.
 	 */
 	public contactWith(name: string, ...props: any[]): any {
-		let ref = this.refs[name];
+		const ref = this.refs[name];
 
 		if (!ref) {
 			throw new Error(`Ref with name ${name} does not exist.`);
 		}
 
-		let instance = ref.instance;
+		const instance = ref.instance;
 
 		return instance.onContact?.(...props);
 	}
 
+	public updateRef(name: string): void {
+		const ref = this.refs[name];
+		if (!ref) {
+			throw new Error(`Ref with name ${name} does not exist.`);
+		}
+
+		const component = ref.instance;
+
+		const html = component.render().trim();
+		const template = document.createElement("template");
+		template.innerHTML = html;
+
+		if (template.content.children.length !== 1) {
+			throw new Error(`Component '${component.name}' must render a single root element.`);
+		}
+
+		const newElement = template.content.firstElementChild as Element;
+
+		this.render(template);
+
+		component.onRender?.(); // lifecycle hook
+
+		ref.element.replaceWith(newElement);
+		ref.element = newElement;
+
+		component.onMount?.(newElement); // lifecycle hook
+	}
+
 	private render(frame: Element): void {
 		for (const com of Object.keys(this.components)) {
-			let component = this.components[com];
+			const component = this.components[com];
 
 			for (const el of Array.from(frame.querySelectorAll(com))) {
-				let renderer: Component = new component();
+				const renderer: Component = new component();
 				renderer.onInit?.(); // lifecycle hook
 
 				if (el instanceof HTMLElement) {
 					renderer.content = el.innerHTML.trim();
 				}
 
-				let body = document.createElement("template");
+				const body = document.createElement("template");
 				body.innerHTML = renderer.render().trim();
 
 				if (body.content.children.length > 1) {
@@ -92,7 +120,7 @@ export default class Signature {
 				this.render(body);
 				renderer.onRender?.(); // lifecycle hook
 
-				let mountEl: Element = body.content.firstElementChild as Element;
+				const mountEl: Element = body.content.firstElementChild as Element;
 
 				if (el.hasAttribute("ref")) {
 					let refName = el.getAttribute("ref") as string;
