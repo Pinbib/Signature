@@ -1,8 +1,12 @@
 import component from "./types/Component.js";
+import Prop from "./types/Prop.js";
 
 export default abstract class Component implements component {
 	abstract readonly name: string;
 	content?: string;
+	
+	props: Record<string, Prop> = {};
+	data: Record<string, string | number | boolean | null> = {};
 
 	abstract render(): string;
 
