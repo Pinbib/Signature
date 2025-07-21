@@ -30,10 +30,7 @@ interface Component {
 
 	/**
 	 * Lifecycle hook called via Signature.contactWith
-	 * @template P
-	 * @param {...P[]} props
-	 * @template T What should this hook return.
-	 * @returns {T} What should this hook return.
+	 * @param {...any[]} props
 	 */
 	onContact?(...props: any[]): any;
 }

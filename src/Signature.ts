@@ -50,13 +50,15 @@ export default class Signature {
 		return this.refs[name]?.element;
 	}
 
+	// /**
+	//  * Works with the reference.
+	//  */
+	// TODO: do a Worker
+
 	/**
 	 * Contacts the Component.onContact method through its reference.
 	 * @param {string} name The name of the reference.
-	 * @template P The type of the properties to pass to the component's onContact method.
-	 * @param {...P[]} props The properties to pass to the component's onContact method.
-	 * @template T The type of the return value of the component's onContact method.
-	 * @returns {T} The return value of the component's onContact method.
+	 * @param {...any[]} props The properties to pass to the component's onContact method.
 	 */
 	public contactWith(name: string, ...props: any[]): any {
 		const ref = this.refs[name];
@@ -67,9 +69,13 @@ export default class Signature {
 
 		const instance = ref.instance;
 
-		return instance.onContact?.(...props);
+		return instance.onContact?.(...props); // lifecycle hook
 	}
 
+	/**
+	 * Updates the reference.
+	 * @param {string} name The name of the reference to update.
+	 */
 	public updateRef(name: string): void {
 		const ref = this.refs[name];
 		if (!ref) {
