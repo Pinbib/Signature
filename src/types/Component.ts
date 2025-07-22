@@ -1,3 +1,5 @@
+import Prop from "./Prop.js";
+
 interface Component {
 	name: string;
 
@@ -5,6 +7,11 @@ interface Component {
 	 * Optional content that is specified in the component tag.
 	 */
 	content?: string;
+
+
+	props: Record<string, Prop>;
+	data: Record<string, string | number | boolean | null>;
+
 
 	/**
 	 * Returns the component as a string.
@@ -33,6 +40,10 @@ interface Component {
 	 * @param {...any[]} props
 	 */
 	onContact?(...props: any[]): any;
+
+	onPropsParsed?(): void;
+
+	onPropParsed?(prop: Prop, value: string | number | boolean | null): void;
 }
 
 export default Component;

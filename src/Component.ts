@@ -5,7 +5,7 @@ export default abstract class Component implements component {
 	abstract readonly name: string;
 	content?: string;
 
-	props: Record<string, Prop> = {};
+	readonly props: Record<string, Prop> = {};
 	readonly data: Record<string, string | number | boolean | null> = {};
 
 	abstract render(): string;
@@ -17,6 +17,10 @@ export default abstract class Component implements component {
 	abstract onMount?(el: Element): void;
 
 	abstract onContact?(...props: any[]): any;
+
+	abstract onPropsParsed?(): void;
+
+	abstract onPropParsed?(prop: Prop, value: string | number | boolean | null): void;
 }
 
 export type ComponentConstructor = new () => Component;

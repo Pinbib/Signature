@@ -106,7 +106,7 @@ export default class Signature {
 
 	private render(frame: Element): void {
 		for (const com of Object.keys(this.components)) {
-			const component = this.components[com];
+			const component: ComponentConstructor = this.components[com];
 
 			for (const el of Array.from(frame.querySelectorAll(com))) {
 				const renderer: Component = new component();
@@ -141,13 +141,18 @@ export default class Signature {
 									throw new Error(`Unsupported type for property '${prop}' in component '${com}': ${renderer.props[prop].type}`);
 							}
 
+
 							if (renderer.props[prop].isValid(val)) {
 								renderer.data[prop] = val;
+
+								renderer.onPropParsed?.(renderer.props[prop], val); // lifecycle hook
 							} else {
 								throw new Error(`Invalid value for property '${prop}' in component '${com}': ${attr}`);
 							}
 						}
 					}
+
+					renderer.onPropsParsed?.(); // lifecycle hook
 				}
 
 				const body = document.createElement("template");
