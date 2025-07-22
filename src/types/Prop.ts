@@ -7,7 +7,7 @@ type TypesMap = {
 
 interface Prop {
 	type: keyof TypesMap;
-	parse: (value: string) => TypesMap[keyof TypesMap];
+	isValid: (value: TypesMap[keyof TypesMap]) => boolean;
 }
 
 export default Prop;

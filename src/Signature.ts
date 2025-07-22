@@ -114,6 +114,40 @@ export default class Signature {
 
 				if (el instanceof HTMLElement) {
 					renderer.content = el.innerHTML.trim();
+
+					for (const prop of Object.keys(renderer.props)) {
+						let attr = el.getAttribute(prop);
+
+						if (attr === null) {
+							renderer.data[prop] = null;
+						} else if (attr === "") {
+							if (renderer.props[prop].isValid(attr)) {
+								renderer.data[prop] = null;
+							}
+						} else {
+							let val;
+
+							switch (renderer.props[prop].type) {
+								case "boolean":
+									val = Boolean(attr);
+									break;
+								case "number":
+									val = Number(attr);
+									break;
+								case "string":
+									val = String(attr);
+									break;
+								default:
+									throw new Error(`Unsupported type for property '${prop}' in component '${com}': ${renderer.props[prop].type}`);
+							}
+
+							if (renderer.props[prop].isValid(val)) {
+								renderer.data[prop] = val;
+							} else {
+								throw new Error(`Invalid value for property '${prop}' in component '${com}': ${attr}`);
+							}
+						}
+					}
 				}
 
 				const body = document.createElement("template");
