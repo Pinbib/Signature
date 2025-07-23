@@ -8,6 +8,8 @@ type TypesMap = {
 interface Prop {
 	type: keyof TypesMap;
 	isValid: (value: TypesMap[keyof TypesMap]) => boolean;
+	required?: boolean;
+	validate?: (value: TypesMap[keyof TypesMap]) => boolean;
 }
 
 export default Prop;
