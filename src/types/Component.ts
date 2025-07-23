@@ -41,8 +41,16 @@ interface Component {
 	 */
 	onContact?(...props: any[]): any;
 
+	/**
+	 * Lifecycle hook that is called when the component's props are parsed.
+	 */
 	onPropsParsed?(): void;
 
+	/**
+	 * Lifecycle hook that is called when a prop is parsed.
+	 * @param {Prop} prop The prop that was parsed.
+	 * @param {string | number | boolean | null} value The value of the prop.
+	 */
 	onPropParsed?(prop: Prop, value: string | number | boolean | null): void;
 }
 

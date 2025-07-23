@@ -116,11 +116,18 @@ export default class Signature {
 					renderer.content = el.innerHTML.trim();
 
 					for (const prop of Object.keys(renderer.props)) {
-						let attr = el.getAttribute(prop);
+						const attr = el.getAttribute(prop);
 
 						if (attr === null) {
+							if (renderer.props[prop].required) {
+								throw new Error(`Property '${prop}' in component '${com}' is required but not provided.`);
+							}
 							renderer.data[prop] = null;
 						} else if (attr === "") {
+							if (renderer.props[prop].required) {
+								throw new Error(`Property '${prop}' in component '${com}' is required but not provided.`);
+							}
+
 							if (renderer.props[prop].isValid(attr)) {
 								renderer.data[prop] = null;
 							}
@@ -138,16 +145,26 @@ export default class Signature {
 									val = String(attr);
 									break;
 								default:
-									throw new Error(`Unsupported type for property '${prop}' in component '${com}': ${renderer.props[prop].type}`);
+									if (renderer.props[prop].required) {
+										throw new Error(`Unsupported type for property '${prop}' in component '${com}': ${renderer.props[prop].type}`);
+									}
+									break;
 							}
+							if (val !== undefined) {
+								if (renderer.props[prop].isValid(val)) {
 
+									if (renderer.props[prop].validate) {
+										if (!renderer.props[prop].validate(val)) {
+											throw new Error(`Invalid value for property '${prop}' in component '${com}': ${val}`);
+										}
+									}
 
-							if (renderer.props[prop].isValid(val)) {
-								renderer.data[prop] = val;
+									renderer.data[prop] = val;
 
-								renderer.onPropParsed?.(renderer.props[prop], val); // lifecycle hook
-							} else {
-								throw new Error(`Invalid value for property '${prop}' in component '${com}': ${attr}`);
+									renderer.onPropParsed?.(renderer.props[prop], val); // lifecycle hook
+								} else {
+									throw new Error(`Invalid value for property '${prop}' in component '${com}': ${attr}`);
+								}
 							}
 						}
 					}
