@@ -8,8 +8,14 @@ interface Component {
 	 */
 	content?: string;
 
-
+	/**
+	 * Defining component properties.
+	 */
 	props: Record<string, Prop>;
+
+	/**
+	 * The properties of the component.
+	 */
 	data: Record<string, string | number | boolean | null>;
 
 
