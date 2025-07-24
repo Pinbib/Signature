@@ -1,5 +1,7 @@
 import Component, {ComponentConstructor} from "./Component.js";
 import Ref from "./Ref.js";
+import ErrorUnion from "./types/Errors.js";
+import Errors from "./Errors.js";
 
 let _counter = 0;
 
@@ -8,25 +10,6 @@ export default class Signature {
 	private refs: Record<string, Ref> = {};
 
 	constructor() {
-	}
-
-	/**
-	 * Starts rendering in the specified area.
-	 * @param {string} selector The selector of the element where the signature should be rendered.
-	 */
-	public contact(selector: string): void {
-		const mainFrame = document.querySelector(selector);
-
-		if (!mainFrame) {
-			throw new Error(`Element not found for selector: ${selector}`);
-		}
-
-		const secondaryFrame = document.createElement("div");
-		secondaryFrame.innerHTML = mainFrame.innerHTML;
-
-		this.render(secondaryFrame);
-
-		mainFrame.replaceChildren(...Array.from(secondaryFrame.childNodes));
 	}
 
 	/**
@@ -104,28 +87,77 @@ export default class Signature {
 		component.onMount?.(newElement); // lifecycle hook
 	}
 
+	/**
+	 * Starts rendering in the specified area.
+	 * @param {string} selector The selector of the element where the signature should be rendered.
+	 */
+	public contact(selector: string): void {
+		const hunter: Promise<void> = new Promise((_r, reject: (reason?: ErrorUnion) => void) => {
+			try {
+				const mainFrame = document.querySelector(selector);
+
+				if (!mainFrame) {
+					reject({id: "element-not-found", selector: selector} as ErrorUnion);
+					return;
+				}
+
+				const secondaryFrame = document.createElement("div");
+				secondaryFrame.innerHTML = mainFrame.innerHTML;
+
+				this.render(secondaryFrame);
+
+				mainFrame.replaceChildren(...Array.from(secondaryFrame.childNodes));
+			} catch (err) {
+				if (err instanceof Error) {
+					reject({id: "unknown", err: err} as ErrorUnion);
+				} else reject(err as ErrorUnion);
+			}
+		});
+
+		// Handle errors
+		hunter.then(() => {
+		}).catch((err: ErrorUnion) => {
+			let message: string = Errors[err.id];
+
+			Object.keys(err).filter(key => !(key in ["id", "err"])).forEach((key) => {
+				message = message.replace(`#${key}`, String(err[key as keyof typeof err]));
+			});
+
+			if (err.id in ["unknown", "unknown-from"]) {
+				console.error(`[${err.id}] ${message}`, (err as {
+					err: Error
+				}).err);
+			} else console.error(`[${err.id}] ${message}`);
+
+			throw "Page rendering was interrupted by Signature due to the above error.";
+		});
+	}
+
 	private render(frame: Element): void {
 		for (const com of Object.keys(this.components)) {
 			const component: ComponentConstructor = this.components[com];
 
+			// Find all elements with the component name in the frame
 			for (const el of Array.from(frame.querySelectorAll(com))) {
 				const renderer: Component = new component();
 				renderer.onInit?.(); // lifecycle hook
 
 				if (el instanceof HTMLElement) {
+					// Fill the renderer's content
 					renderer.content = el.innerHTML.trim();
 
+					// Parse properties
 					for (const prop of Object.keys(renderer.props)) {
 						const attr = el.getAttribute(prop);
 
 						if (attr === null) {
 							if (renderer.props[prop].required) {
-								throw new Error(`Property '${prop}' in component '${com}' is required but not provided.`);
+								throw {id: "prop-is-required", component: com, prop: prop} as ErrorUnion;
 							}
 							renderer.data[prop] = null;
 						} else if (attr === "") {
 							if (renderer.props[prop].required) {
-								throw new Error(`Property '${prop}' in component '${com}' is required but not provided.`);
+								throw {id: "prop-is-required", component: com, prop: prop} as ErrorUnion;
 							}
 
 							if (renderer.props[prop].isValid(attr)) {
@@ -134,6 +166,7 @@ export default class Signature {
 						} else {
 							let val;
 
+							// Determine the type of the property and convert the attribute value accordingly
 							switch (renderer.props[prop].type) {
 								case "boolean":
 									val = Boolean(attr);
@@ -146,16 +179,28 @@ export default class Signature {
 									break;
 								default:
 									if (renderer.props[prop].required) {
-										throw new Error(`Unsupported type for property '${prop}' in component '${com}': ${renderer.props[prop].type}`);
+										throw {
+											id: "unsupported-type-for-property",
+											component: com,
+											prop: prop,
+											type: renderer.props[prop].type
+										} as ErrorUnion;
 									}
 									break;
 							}
+
 							if (val !== undefined) {
 								if (renderer.props[prop].isValid(val)) {
 
 									if (renderer.props[prop].validate) {
 										if (!renderer.props[prop].validate(val)) {
-											throw new Error(`Invalid value for property '${prop}' in component '${com}': ${val}`);
+											throw {
+												id: "invalid-value-for-property",
+												component: com,
+												prop: prop,
+												value: val,
+												attr: attr
+											} as ErrorUnion;
 										}
 									}
 
@@ -163,7 +208,13 @@ export default class Signature {
 
 									renderer.onPropParsed?.(renderer.props[prop], val); // lifecycle hook
 								} else {
-									throw new Error(`Invalid value for property '${prop}' in component '${com}': ${attr}`);
+									throw {
+										id: "invalid-value-for-property",
+										component: com,
+										prop: prop,
+										value: val,
+										attr: attr
+									} as ErrorUnion;
 								}
 							}
 						}
@@ -172,11 +223,19 @@ export default class Signature {
 					renderer.onPropsParsed?.(); // lifecycle hook
 				}
 
+				// Create a template for rendering
 				const body = document.createElement("template");
-				body.innerHTML = renderer.render().trim();
+
+				try {
+					body.innerHTML = renderer.render().trim();
+				} catch (err) {
+					if (err instanceof Error) {
+						throw {id: "unknown-from", from: renderer.name, err: err} as ErrorUnion;
+					}
+				}
 
 				if (body.content.children.length > 1) {
-					throw new Error(`Component '${com}' must render a single root element.`);
+					throw {id: "multiple-root-elements", component: com, elements: body.innerHTML} as ErrorUnion;
 				}
 
 				this.render(body);
@@ -184,17 +243,19 @@ export default class Signature {
 
 				const mountEl: Element = body.content.firstElementChild as Element;
 
+				// Processing ref
 				if (el.hasAttribute("ref")) {
 					let refName = el.getAttribute("ref") as string;
 
 					_counter++;
 
+					// If the ref name is empty, generate a unique name
 					if (refName === "") {
 						refName = `r${_counter}${Math.random().toString(36).substring(2, 15)}${_counter}`;
 					}
 
 					if (this.refs[refName]) {
-						throw new Error(`Ref with name ${refName} already exists.`);
+						throw {id: "ref-collision", ref: refName, component: com} as ErrorUnion;
 					}
 
 					this.refs[refName] = new Ref(renderer, mountEl);

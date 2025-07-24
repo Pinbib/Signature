@@ -1,6 +1,6 @@
 {
   "name": "web-signature",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Primitive and fast framework for rendering web interfaces",
   "license": "ISC",
   "author": "PinBib",
@@ -52,6 +52,18 @@
 	  "types": "./dist/d/types/Component.d.ts",
 	  "browser": "./dist/types/Component.js",
 	  "default": "./dist/types/Component.js"
+	},
+	"./Prop": {
+	  "import": "./dist/Prop.js",
+	  "types": "./dist/d/Prop.d.ts",
+	  "browser": "./dist/Prop.js",
+	  "default": "./dist/Prop.js"
+	},
+	"./types/Prop": {
+	  "import": "./dist/types/Prop.js",
+	  "types": "./dist/d/types/Prop.d.ts",
+	  "browser": "./dist/types/Prop.js",
+	  "default": "./dist/types/Prop.js"
 	},
 	"./Signature": {
 	  "import": "./dist/Signature.js",
