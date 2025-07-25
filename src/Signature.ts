@@ -2,12 +2,16 @@ import Component, {ComponentConstructor} from "./Component.js";
 import Ref from "./Ref.js";
 import ErrorUnion from "./types/Errors.js";
 import Errors from "./Errors.js";
+import Library from "./Library.js";
 
 let _counter = 0;
+
+type LibMeta = { name: string, version?: string, author?: string, components: string[] };
 
 export default class Signature {
 	private components: Record<string, ComponentConstructor> = {};
 	private refs: Record<string, Ref> = {};
+	private libs: Record<string, LibMeta> = {};
 
 	constructor() {
 	}
@@ -15,13 +19,44 @@ export default class Signature {
 	/**
 	 * Adds a component to the signature.
 	 * @param {ComponentConstructor} component The component to add.
+	 * @param {string} name Optional name for the component. If not provided, uses the component's name property.
 	 */
-	public add(component: ComponentConstructor): void {
-		if (this.components[component.name]) {
-			console.warn(new Error(`Component with name ${component.name} already exists.`));
+	public add(component: ComponentConstructor, name?: string): void {
+		const key = typeof name === "string" ? name : component.name;
+
+		if (this.components[key]) {
+			console.warn(new Error(`Component with name ${key} already exists.`));
 		}
 
-		this.components[component.name] = component;
+		this.components[key] = component;
+	}
+
+	/**
+	 * Registers a library in the signature.
+	 * @import {Library} from "./Library.js";
+	 * @param {Library} library The library to register.
+	 * @param {string[]} exclude Optional array of component names to exclude from the library registration.
+	 */
+	public register(library: Library, ...exclude: string[]): void {
+		if (this.libs[library.name]) {
+			console.warn(new Error(`Library with name ${library.name} already exists.`));
+		}
+
+		const components: Array<{
+			component: ComponentConstructor,
+			name: string
+		}> = library.list().filter(com => !(com.name in exclude));
+
+		this.libs[library.name] = {
+			name: library.name,
+			version: library.version,
+			author: library.author,
+			components: components.map(com => com.name)
+		};
+
+		for (const com of components) {
+			this.add(com.component, `${library.name}-${com.name}`);
+		}
 	}
 
 	/**
