@@ -8,7 +8,8 @@ const errorMessages: Record<Errors, string> = {
 	"multiple-root-elements": "Component '#component' must render a single root element. \n\t#elements",
 	"ref-collision": "Ref collision detected for ref '#ref' in component '#component'.",
 	"unknown": "An unknown error occurred.",
-	"unknown-from": "An unknown error occurred in component '#from'."
+	"unknown-from": "An unknown error occurred in component '#from'.",
+	"stack-overflow": "Stack Overflow detected: possible recursive component rendering."
 }
 
 export default errorMessages;

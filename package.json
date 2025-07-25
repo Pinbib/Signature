@@ -1,6 +1,6 @@
 {
   "name": "web-signature",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Primitive and fast framework for rendering web interfaces",
   "license": "ISC",
   "author": "PinBib",
@@ -82,6 +82,12 @@
 	  "types": "./bundle/d/index.d.ts",
 	  "browser": "./bundle/index.min.js",
 	  "default": "./bundle/index.min.js"
+	},
+	"./Library": {
+	  "import": "./dist/Library.js",
+	  "types": "./dist/d/Library.d.ts",
+	  "browser": "./dist/Library.js",
+	  "default": "./dist/Library.js"
 	}
   },
   "devDependencies": {

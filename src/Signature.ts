@@ -192,14 +192,16 @@ export default class Signature {
 				mainFrame.replaceChildren(...Array.from(secondaryFrame.childNodes));
 			} catch (err) {
 				if (err instanceof Error) {
-					reject({id: "unknown", err: err} as ErrorUnion);
+					if (err instanceof RangeError && err.message.includes("stack")) {
+						reject({id: "stack-overflow", err: err} as ErrorUnion);
+					} else
+						reject({id: "unknown", err: err} as ErrorUnion);
 				} else reject(err as ErrorUnion);
 			}
 		});
 
 		// Handle errors
-		hunter.then(() => {
-		}).catch((err: ErrorUnion) => {
+		hunter.catch((err: ErrorUnion) => {
 			let message: string = Errors[err.id];
 
 			Object.keys(err).filter(key => !(key in ["id", "err"])).forEach((key) => {
@@ -216,7 +218,7 @@ export default class Signature {
 		});
 	}
 
-	private render(frame: Element): void {
+	private render(frame: Element | DocumentFragment): void {
 		for (const com of Object.keys(this.components)) {
 			const component: ComponentConstructor = this.components[com];
 
@@ -321,7 +323,8 @@ export default class Signature {
 					throw {id: "multiple-root-elements", component: com, elements: body.innerHTML} as ErrorUnion;
 				}
 
-				this.render(body);
+				// !!! this.render(body) wrong
+				this.render(body.content);
 				renderer.onRender?.(); // lifecycle hook
 
 				const mountEl: Element = body.content.firstElementChild as Element;

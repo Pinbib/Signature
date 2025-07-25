@@ -6,7 +6,8 @@ type Errors =
 	| "unsupported-type-for-property"
 	| "invalid-value-for-property"
 	| "multiple-root-elements"
-	| "ref-collision";
+	| "ref-collision"
+	| "stack-overflow";
 
 export {Errors};
 
@@ -63,6 +64,11 @@ export interface RefCollisionError extends error {
 	component: string;
 }
 
+export interface StackOverflowError extends error {
+	id: "stack-overflow";
+	err?: Error;
+}
+
 type ErrorUnion =
 	UnknownError
 	| UnknownFromError
@@ -71,6 +77,7 @@ type ErrorUnion =
 	| UnsupportedTypeForPropertyError
 	| InvalidValueForPropertyError
 	| MultipleRootElementsError
-	| RefCollisionError;
+	| RefCollisionError
+	| StackOverflowError;
 
 export default ErrorUnion;
