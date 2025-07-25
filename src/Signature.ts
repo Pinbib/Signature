@@ -2,11 +2,14 @@ import Component, {ComponentConstructor} from "./Component.js";
 import Ref from "./Ref.js";
 import ErrorUnion from "./types/Errors.js";
 import Errors from "./Errors.js";
-import Library from "./Library.js";
+import Library, {LibMeta} from "./Library.js";
 
 let _counter = 0;
 
-type LibMeta = { name: string, version?: string, author?: string, components: string[] };
+type ResolvedLib = {
+	components: string[],
+	dependencies: Record<string, ResolvedLib>
+};
 
 export default class Signature {
 	private components: Record<string, ComponentConstructor> = {};
@@ -51,12 +54,57 @@ export default class Signature {
 			name: library.name,
 			version: library.version,
 			author: library.author,
-			components: components.map(com => com.name)
+			components: components.map(com => com.name),
+			dependencies: library.libs
 		};
 
 		for (const com of components) {
 			this.add(com.component, `${library.name}-${com.name}`);
 		}
+	}
+
+	/**
+	 * Returns a library.
+	 * @param {string} name The name of the library.
+	 * @return {LibMeta}
+	 */
+	public lib(name: string): LibMeta | undefined {
+		return this.libs[name];
+	}
+
+	/**
+	 * Returns a formatted object of all libraries in the signature.
+	 * @return {Record<string, ResolvedLib>} A object of formatted libraries with their components and dependencies.
+	 */
+	public libraries(): Record<string, ResolvedLib> {
+		const formatKey = (lib: LibMeta): string => {
+			let key = lib.name;
+
+			if (lib.version) key += `@${lib.version}`;
+			if (lib.author) key += `#${lib.author}`;
+
+			return key;
+		};
+
+		const resolve = (libs: Record<string, LibMeta>, visited = new Set<string>()): Record<string, ResolvedLib> => {
+			const result: Record<string, ResolvedLib> = {};
+
+			for (const [_, lib] of Object.entries(libs)) {
+				const key = formatKey(lib);
+
+				if (visited.has(key)) continue;
+				visited.add(key);
+
+				result[key] = {
+					components: lib.components,
+					dependencies: resolve(lib.dependencies, visited)
+				};
+			}
+
+			return result;
+		};
+
+		return resolve(this.libs);
 	}
 
 	/**

@@ -1,9 +1,19 @@
 import {ComponentConstructor} from "./Component.js";
 
+type LibMeta = {
+	name: string,
+	version?: string,
+	author?: string,
+	components: string[],
+	dependencies: Record<string, LibMeta>
+};
+
 export default class Library {
 	public readonly name: string;
 	public readonly version?: string;
 	public readonly author?: string;
+
+	public libs: Record<string, LibMeta> = {};
 
 	private components: Record<string, ComponentConstructor> = {};
 
@@ -14,7 +24,7 @@ export default class Library {
 	 */
 	constructor(name: string, author?: string, version?: string) {
 		this.name = name;
-		
+
 		// optional properties
 		this.author = author;
 		this.version = version;
@@ -36,12 +46,50 @@ export default class Library {
 	}
 
 	/**
+	 * Registers a library.
+	 * @import {Library} from "./Library.js";
+	 * @param {Library} library The library to register.
+	 * @param {string[]} exclude Optional array of component names to exclude from the library registration.
+	 */
+	public register(library: Library, ...exclude: string[]): void {
+		if (this.libs[library.name]) {
+			console.warn(new Error(`Library with name ${library.name} already exists in ${this.name}.`));
+		}
+
+		const components: Array<{
+			component: ComponentConstructor,
+			name: string
+		}> = library.list().filter(com => !(com.name in exclude));
+
+		this.libs[library.name] = {
+			name: library.name,
+			version: library.version,
+			author: library.author,
+			components: components.map(com => com.name),
+			dependencies: library.libs
+		};
+
+		for (const com of components) {
+			this.add(com.component, `${library.name}-${com.name}`);
+		}
+	}
+
+	/**
 	 * Retrieves a component by its name.
 	 * @param {string} name The name of the component to retrieve.
 	 * @return {ComponentConstructor | undefined} The component associated with the name, or undefined if it does not exist.
 	 */
 	public get(name: string): ComponentConstructor | undefined {
 		return this.components[name];
+	}
+
+	/**
+	 * Returns a library.
+	 * @param {string} name The name of the library.
+	 * @return {LibMeta}
+	 */
+	public lib(name: string): LibMeta | undefined {
+		return this.libs[name];
 	}
 
 	/**
@@ -54,4 +102,7 @@ export default class Library {
 			name
 		}));
 	}
+
 }
+
+export {LibMeta};
