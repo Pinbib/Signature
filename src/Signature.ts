@@ -116,11 +116,6 @@ export default class Signature {
 	// 	return this.refs[name]?.element;
 	// }
 
-	// /**
-	//  * Works with the reference.
-	//  */
-	// TODO: do a Worker
-
 	/**
 	 * Contacts the Component.onContact method through its reference.
 	 * @param {string} name The name of the reference.
@@ -181,7 +176,7 @@ export default class Signature {
 
 			const newElement = template.content.firstElementChild as Element;
 
-			this.render(template);
+			this.render(template.content);
 
 			component.onRender?.(); // lifecycle hook
 
@@ -288,6 +283,19 @@ export default class Signature {
 									break;
 								case "string":
 									val = String(attr);
+									break;
+								case "array":
+									try {
+										val = JSON.parse(attr);
+									} catch (e) {
+										throw {
+											id: "invalid-value-for-property",
+											component: com,
+											prop: prop,
+											value: attr,
+											attr: attr
+										} as ErrorUnion;
+									}
 									break;
 								default:
 									if (renderer.props[prop].required) {

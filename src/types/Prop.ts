@@ -2,6 +2,7 @@ type TypesMap = {
 	string: string;
 	number: number;
 	boolean: boolean;
+	array: any[];
 	null: null;
 }
 

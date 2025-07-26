@@ -3,11 +3,25 @@ import Prop from "./Prop.js";
 interface Component {
 	name: string;
 
+	/**
+	 * Optional reference to the component.
+	 */
 	ref?: {
+		/**
+		 * Unique identifier for the component.
+		 */
 		id: string;
 
+		/**
+		 * Function to contact the component with props.
+		 * @param {...any[]} props - The properties to send to the component.
+		 * @returns {any}
+		 */
 		contact: (...props: any[]) => any;
 
+		/**
+		 * Function to update the component.
+		 */
 		update: () => void;
 	}
 
