@@ -392,6 +392,12 @@ export default class Signature {
 						this.refs[refName] = new Ref(renderer, mountEl);
 
 						mountEl.setAttribute("ref", refName);
+
+						renderer.ref = {
+							id: refName,
+							contact: (...props: any[]) => this.contactWith(refName, ...props),
+							update: () => this.updateRef(refName)
+						};
 					}
 
 					el.replaceWith(body.content);

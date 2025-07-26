@@ -5,6 +5,12 @@ export default abstract class Component implements component {
 	abstract readonly name: string;
 	content?: string;
 
+	ref?: {
+		readonly id: string;
+		readonly contact: (...props: any[]) => any;
+		readonly update: () => void;
+	}
+
 	readonly props: Record<string, Prop> = {};
 	readonly data: Record<string, string | number | boolean | null> = {};
 

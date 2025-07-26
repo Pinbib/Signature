@@ -3,6 +3,14 @@ import Prop from "./Prop.js";
 interface Component {
 	name: string;
 
+	ref?: {
+		id: string;
+
+		contact: (...props: any[]) => any;
+
+		update: () => void;
+	}
+
 	/**
 	 * Optional content that is specified in the component tag.
 	 */
