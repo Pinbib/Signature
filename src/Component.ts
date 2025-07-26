@@ -8,7 +8,7 @@ export default abstract class Component implements component {
 	readonly props: Record<string, Prop> = {};
 	readonly data: Record<string, string | number | boolean | null> = {};
 
-	abstract render(): string;
+	abstract render(): string | Promise<string>;
 
 	abstract onInit?(): void;
 

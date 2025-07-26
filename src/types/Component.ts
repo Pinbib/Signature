@@ -23,7 +23,7 @@ interface Component {
 	 * Returns the component as a string.
 	 * @returns {string} The rendered component as a string.
 	 */
-	render(): string;
+	render(): string | Promise<string>;
 
 	/**
 	 * Lifecycle hook that is called when the component is initialized.

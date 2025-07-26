@@ -107,14 +107,14 @@ export default class Signature {
 		return resolve(this.libs);
 	}
 
-	/**
-	 * Returns a reference.
-	 * @param {string} name The name of the reference.
-	 * @return {Element | undefined} The element associated with the reference, or undefined if it does not exist.
-	 */
-	public ref(name: string): Element | undefined {
-		return this.refs[name]?.element;
-	}
+	// /**
+	//  * Returns a reference.
+	//  * @param {string} name The name of the reference.
+	//  * @return {Element | undefined} The element associated with the reference, or undefined if it does not exist.
+	//  */
+	// public ref(name: string): Element | undefined {
+	// 	return this.refs[name]?.element;
+	// }
 
 	// /**
 	//  * Works with the reference.
@@ -150,24 +150,46 @@ export default class Signature {
 
 		const component = ref.instance;
 
-		const html = component.render().trim();
-		const template = document.createElement("template");
-		template.innerHTML = html;
+		let fragment: string | Promise<string> = "";
 
-		if (template.content.children.length !== 1) {
-			throw new Error(`Component '${component.name}' must render a single root element.`);
+		try {
+			fragment = component.render();
+		} catch (err) {
+			if (err instanceof Error) {
+				throw {id: "unknown-from", from: component.name, err: err} as ErrorUnion;
+			}
 		}
 
-		const newElement = template.content.firstElementChild as Element;
+		const template = document.createElement("template");
 
-		this.render(template);
+		((next: () => void) => {
+			if (typeof fragment === "string") {
+				template.innerHTML = fragment.trim();
+				next();
+			} else if (fragment instanceof Promise) {
+				fragment.then((html: string) => {
+					template.innerHTML = html.trim();
+					next();
+				}).catch((err: Error) => {
+					throw {id: "unknown-from", from: component.name, err: err} as ErrorUnion;
+				});
+			}
+		})(() => {
+			if (template.content.children.length !== 1) {
+				throw new Error(`Component '${component.name}' must render a single root element.`);
+			}
 
-		component.onRender?.(); // lifecycle hook
+			const newElement = template.content.firstElementChild as Element;
 
-		ref.element.replaceWith(newElement);
-		ref.element = newElement;
+			this.render(template);
 
-		component.onMount?.(newElement); // lifecycle hook
+			component.onRender?.(); // lifecycle hook
+
+			ref.element.replaceWith(newElement);
+			ref.element = newElement;
+
+			component.onMount?.(newElement); // lifecycle hook
+		})
 	}
 
 	/**
@@ -311,47 +333,66 @@ export default class Signature {
 				// Create a template for rendering
 				const body = document.createElement("template");
 
+				let fragment: string | Promise<string> = "";
+
 				try {
-					body.innerHTML = renderer.render().trim();
+					fragment = renderer.render();
 				} catch (err) {
 					if (err instanceof Error) {
 						throw {id: "unknown-from", from: renderer.name, err: err} as ErrorUnion;
 					}
 				}
 
-				if (body.content.children.length > 1) {
-					throw {id: "multiple-root-elements", component: com, elements: body.innerHTML} as ErrorUnion;
-				}
-
-				// !!! this.render(body) wrong
-				this.render(body.content);
-				renderer.onRender?.(); // lifecycle hook
-
-				const mountEl: Element = body.content.firstElementChild as Element;
-
-				// Processing ref
-				if (el.hasAttribute("ref")) {
-					let refName = el.getAttribute("ref") as string;
-
-					_counter++;
-
-					// If the ref name is empty, generate a unique name
-					if (refName === "") {
-						refName = `r${_counter}${Math.random().toString(36).substring(2, 15)}${_counter}`;
+				((next: () => void) => {
+					if (typeof fragment === "string") {
+						body.innerHTML = fragment.trim();
+						next();
+					} else if (fragment instanceof Promise) {
+						try {
+							fragment.then((html: string) => {
+								body.innerHTML = html.trim();
+								next();
+							}).catch((err: Error) => {
+								throw {id: "unknown-from", from: renderer.name, err: err} as ErrorUnion;
+							});
+						} catch (err) {
+							console.log(1)
+						}
+					}
+				})(() => {
+					if (body.content.children.length > 1) {
+						throw {id: "multiple-root-elements", component: com, elements: body.innerHTML} as ErrorUnion;
 					}
 
-					if (this.refs[refName]) {
-						throw {id: "ref-collision", ref: refName, component: com} as ErrorUnion;
+					this.render(body.content);
+					renderer.onRender?.(); // lifecycle hook
+
+					const mountEl: Element = body.content.firstElementChild as Element;
+
+					// Processing ref
+					if (el.hasAttribute("ref")) {
+						let refName = el.getAttribute("ref") as string;
+
+						_counter++;
+
+						// If the ref name is empty, generate a unique name
+						if (refName === "") {
+							refName = `r${_counter}${Math.random().toString(36).substring(2, 15)}${_counter}`;
+						}
+
+						if (this.refs[refName]) {
+							throw {id: "ref-collision", ref: refName, component: com} as ErrorUnion;
+						}
+
+						this.refs[refName] = new Ref(renderer, mountEl);
+
+						mountEl.setAttribute("ref", refName);
 					}
 
-					this.refs[refName] = new Ref(renderer, mountEl);
+					el.replaceWith(body.content);
 
-					mountEl.setAttribute("ref", refName);
-				}
-
-				el.replaceWith(body.content);
-
-				renderer.onMount?.(mountEl); // lifecycle hook
+					renderer.onMount?.(mountEl); // lifecycle hook
+				});
 			}
 		}
 	}
