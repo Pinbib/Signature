@@ -195,8 +195,9 @@ export default class Signature {
 	/**
 	 * Starts rendering in the specified area.
 	 * @param {string} selector The selector of the element where the signature should be rendered.
+	 * @param {() => void} [callback] Optional callback that will be called after rendering is complete.
 	 */
-	public contact(selector: string): void {
+	public contact(selector: string, callback?: () => void): void {
 		const hunter: Promise<void> = new Promise((_r, reject: (reason?: ErrorUnion) => void) => {
 			try {
 				const mainFrame = document.querySelector(selector);
@@ -212,6 +213,10 @@ export default class Signature {
 				this.render(secondaryFrame);
 
 				mainFrame.replaceChildren(...Array.from(secondaryFrame.childNodes));
+
+				if (callback) {
+					callback();
+				}
 			} catch (err) {
 				if (err instanceof Error) {
 					if (err instanceof RangeError && err.message.includes("stack")) {
