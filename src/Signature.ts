@@ -245,7 +245,7 @@ export default class Signature {
 			const component: ComponentConstructor = this.components[com];
 
 			// Find all elements with the component name in the frame
-			for (const el of Array.from(frame.querySelectorAll(com))) {
+			for (const el of Array.from(frame.querySelectorAll(com)).concat(Array.from(frame.querySelectorAll(`[si-component="${com}"]`)))) {
 				const renderer: Component = new component();
 				renderer.onInit?.(); // lifecycle hook
 
