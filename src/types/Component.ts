@@ -1,7 +1,16 @@
 import Prop from "./Prop.js";
 
+export type Options = {
+	/**
+	 * Specifies whether the component must have a ref.
+	 */
+	generateRefIfNotSpecified?: boolean;
+};
+
 interface Component {
 	name: string;
+
+	options: Options;
 
 	/**
 	 * Optional reference to the component.

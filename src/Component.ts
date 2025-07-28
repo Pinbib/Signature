@@ -1,9 +1,15 @@
 import component from "./types/Component.js";
 import Prop from "./types/Prop.js";
 
+import type {Options} from "./types/Component.js";
+
 export default abstract class Component implements component {
 	abstract readonly name: string;
 	content?: string;
+
+	options: Options = {
+		generateRefIfNotSpecified: false,
+	}
 
 	ref?: {
 		readonly id: string;

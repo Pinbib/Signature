@@ -11,6 +11,8 @@ type ResolvedLib = {
 	dependencies: Record<string, ResolvedLib>
 };
 
+type Responsibility = "error" | "auto" | "ignore";
+
 export default class Signature {
 	private components: Record<string, ComponentConstructor> = {};
 	private refs: Record<string, Ref> = {};
@@ -383,8 +385,12 @@ export default class Signature {
 					const mountEl: Element = body.content.firstElementChild as Element;
 
 					// Processing ref
-					if (el.hasAttribute("ref")) {
-						let refName = el.getAttribute("ref") as string;
+					if (el.hasAttribute("ref") || renderer.options.generateRefIfNotSpecified) {
+						let refName = el.getAttribute("ref");
+
+						if (refName === null) {
+							refName = "";
+						}
 
 						_counter++;
 
