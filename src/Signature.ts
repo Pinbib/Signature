@@ -229,7 +229,7 @@ export default class Signature {
 			let message: string = Errors[err.id];
 
 			Object.keys(err).filter(key => !(key in ["id", "err"])).forEach((key) => {
-				message = message.replace(`#${key}`, String(err[key as keyof typeof err]));
+				message = message.replace(new RegExp(`#${key}`, "gm"), String(err[key as keyof typeof err]));
 			});
 
 			if (err.id in ["unknown", "unknown-from"]) {

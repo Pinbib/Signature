@@ -14,7 +14,7 @@
   "module": "./dist/index.js",
   "scripts": {
 	"build": "tsc -p tsconfig.json && rollup -c rollup.config.js",
-	"watch": "tsc -p tsconfig.json --watch"
+	"dev": "tsc -p tsconfig.json --watch"
   },
   "files": [
 	"bundle",
@@ -23,7 +23,8 @@
 	"README.md",
 	"LICENSE",
 	"tsconfig.json",
-	"rollup.config.js"
+	"rollup.config.js",
+	"Signature.svg"
   ],
   "keywords": [
 	"UI",
