@@ -11,8 +11,6 @@ type ResolvedLib = {
 	dependencies: Record<string, ResolvedLib>
 };
 
-type Responsibility = "error" | "auto" | "ignore";
-
 export default class Signature {
 	private components: Record<string, ComponentConstructor> = {};
 	private refs: Record<string, Ref> = {};
