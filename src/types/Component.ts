@@ -7,6 +7,25 @@ export type Options = {
 	generateRefIfNotSpecified?: boolean;
 };
 
+export type Ref = {
+	/**
+	 * Unique identifier for the component.
+	 */
+	id: string;
+
+	/**
+	 * Function to contact the component with props.
+	 * @param {...any[]} props - The properties to send to the component.
+	 * @returns {any}
+	 */
+	contact: (...props: any[]) => any;
+
+	/**
+	 * Function to update the component.
+	 */
+	update: () => void;
+}
+
 interface Component {
 	name: string;
 
@@ -14,25 +33,9 @@ interface Component {
 
 	/**
 	 * Optional reference to the component.
+	 * @type {Ref}
 	 */
-	ref?: {
-		/**
-		 * Unique identifier for the component.
-		 */
-		id: string;
-
-		/**
-		 * Function to contact the component with props.
-		 * @param {...any[]} props - The properties to send to the component.
-		 * @returns {any}
-		 */
-		contact: (...props: any[]) => any;
-
-		/**
-		 * Function to update the component.
-		 */
-		update: () => void;
-	}
+	ref?: Ref;
 
 	/**
 	 * Optional content that is specified in the component tag.

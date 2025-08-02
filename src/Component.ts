@@ -2,6 +2,7 @@ import component from "./types/Component.js";
 import Prop from "./types/Prop.js";
 
 import type {Options} from "./types/Component.js";
+import type {Ref} from "./types/Component.js";
 
 export default abstract class Component implements component {
 	abstract readonly name: string;
@@ -11,11 +12,7 @@ export default abstract class Component implements component {
 		generateRefIfNotSpecified: false,
 	}
 
-	ref?: {
-		readonly id: string;
-		readonly contact: (...props: any[]) => any;
-		readonly update: () => void;
-	}
+	ref?: Ref;
 
 	readonly props: Record<string, Prop> = {};
 	readonly data: Record<string, string | number | boolean | null> = {};
