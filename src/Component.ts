@@ -19,17 +19,23 @@ export default abstract class Component implements component {
 
 	abstract render(): string | Promise<string>;
 
-	abstract onInit?(): void;
+	onInit?(): void {
+	};
 
-	abstract onRender?(): void;
+	onRender?(): void {
+	};
 
-	abstract onMount?(el: Element): void;
+	onMount?(el: Element): void {
+	};
 
-	abstract onContact?(...props: any[]): any;
+	onContact?(...props: any[]): any {
+	};
 
-	abstract onPropsParsed?(): void;
+	onPropsParsed?(): void {
+	};
 
-	abstract onPropParsed?(prop: Prop, value: string | number | boolean | null): void;
+	onPropParsed?(prop: Prop, value: string | number | boolean | null): void {
+	};
 }
 
 export type ComponentConstructor = new () => Component;
