@@ -14,7 +14,17 @@ import {Signature} from 'web-signature';
 const si = new Signature();
 ```
 
-// list
+* [Signature](#signature)
+	* [Signature.contact()](#signaturecontact)
+	* Works with components
+		* [Signature.add()](#signatureadd)
+		* [Signature.contactWith()](#signaturecontactwith)
+		* [Signature.updateRef()](#signatureupdateref)
+	* Works with libraries
+		* [Signature.register()](#signatureregister)
+		* [Signature.lib()](#signaturelib)
+		* [Signature.libraries()](#signaturelibraries)
+	* [Ref attribute](#ref-attribute)
 
 ## Signature.contact()
 
@@ -192,7 +202,7 @@ type ResolvedLib = {
 };
 ```
 
-## Атрибут ref
+## ref attribute
 
 The `ref` attribute allows you to store a reference to a component so that you can later access it from Signature.
 
@@ -209,4 +219,15 @@ leave the ref empty:
 <My-component ref>
     <!-- ref will be automatically generated -->
 </My-component>
+```
+
+## si-component attribute
+
+`si-component` This is an attribute that indicates that the element is a Signature component.
+
+```html
+
+<div si-component="MyComponent">
+    <!-- This is a Signature component 'MyComponent' -->
+</div>
 ```
