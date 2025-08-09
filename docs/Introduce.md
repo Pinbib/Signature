@@ -27,7 +27,8 @@ import {Signature} from 'web-signature';
 const si = new Signature();
 ```
 
-To add a component, use the `Signature.add(component: ComponentConstructor, name?: string)` method, which takes the
+To add a component, use the [
+`Signature.add(component: ComponentConstructor, name?: string)`](./Signature.md#signatureadd) method, which takes the
 [component](./Component.md) class and its name. For example:
 
 ```ts
@@ -46,9 +47,9 @@ si.add(MyComponent, 'my-component');
 building the
 project.**
 
-To register a [library](./Library.md), the `Signature.register(library: Library)` method is used, which takes an
-instance of the
-[Library](./Library.md).
+To register a [library](./Library.md), the [`Signature.register(library: Library)`](./Signature.md#signatureregister)
+method is used, which takes an
+instance of the [Library](./Library.md).
 For example:
 
 ```ts
@@ -59,7 +60,8 @@ const si = new Signature();
 si.register(new MyLibrary());
 ```
 
-For rendering the page there is a `Signature.contact(selector: string, callback?)` method. For example:
+For rendering the page there is a [`Signature.contact(selector: string, callback?)`](./Signature.md#signaturecontact)
+method. For example:
 
 ```ts
 import {Signature} from 'web-signature';
@@ -74,10 +76,11 @@ si.contact('#app', () => {
 ## About [Component](./Component.md)
 
 This is an abstract class from which all components inherit. It defines a standard structure for any element.
-It has a main method `Component.render()`, and component lifecycle hooks such as `Component.onMount()`.
+It has a main method [`Component.render()`](./Component.md#componentrender), and component lifecycle hooks such as [
+`Component.onMount()`](./Component.md#componentonmount).
 
 To create a component, you need to inherit the [`Component`](./Component.md) class and implement the
-`Component.render(): string` method
+[`Component.render(): string`](./Component.md#componentrender) method
 and the
 `name` field.
 Let's create a simple component that simply displays text:
@@ -103,11 +106,12 @@ class MyComponent extends Component {
 
 Now let's make a counter component that will increment the value when clicked. To do this,
 we will need to update it somehow and track events.
-For a component to be able to update, it must have its own [ref](./Ref.md). [Ref](./Ref.md) - allows you to associate a
+For a component to be able to update, it must have its own ref. Ref - allows you to associate a
 component instance with
 its DOM
 element, if the ref is not specified, the [Signature](./Signature.md) will not remember the component instance.
-And to track events, we will use the `Component.onMount(el: Element)` hook, which is called after the component has been
+And to track events, we will use the [`Component.onMount(el: Element)`](./Component.md#componentonmount) hook, which is
+called after the component has been
 added to
 the page.
 
@@ -153,11 +157,10 @@ The HTML should look like this:
 </div>
 ```
 
-It is not necessary to specify a specific [ref](./Ref.md), the signature will generate it itself, but if you want the
-ref to have a
+It is not necessary to specify a specific ref, the signature will generate it itself,
+but if you want the ref to have a
 specific name, you can specify it in the attribute. You can also set the component options to auto-generate
-the [ref](./Ref.md) if
-it was not specified.
+the ref if it was not specified.
 
 ```ts
 // ...
@@ -253,7 +256,8 @@ myLibrary.add(StepCounter, "Step-counter");
 export default myLibrary;
 ```
 
-To register the library in [Signature](./Signature.md), use the `Signature.register(library: Library)` method:
+To register the library in [Signature](./Signature.md#signatureregister), use the `Signature.register(library: Library)`
+method:
 
 ```ts
 import {Signature} from 'web-signature';
