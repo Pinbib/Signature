@@ -27,8 +27,8 @@ import {Signature} from 'web-signature';
 const si = new Signature();
 ```
 
-To add a component, use the [
-`Signature.add(component: ComponentConstructor, name?: string)`](./Signature.md#signatureadd) method, which takes the
+To add a component, use the
+[`Signature.add(component: ComponentConstructor, name?: string)`](./Signature.md#signatureadd) method, which takes the
 [component](./Component.md) class and its name. For example:
 
 ```ts
@@ -256,7 +256,8 @@ myLibrary.add(StepCounter, "Step-counter");
 export default myLibrary;
 ```
 
-To register the library in [Signature](./Signature.md#signatureregister), use the `Signature.register(library: Library)`
+To register the library in [Signature](./Signature.md#signatureregister), use the
+[`Signature.register(library: Library)`](./Signature.md#signatureregister)
 method:
 
 ```ts

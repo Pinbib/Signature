@@ -89,7 +89,7 @@ const components = myLibrary.list();
 Registers a library to a library. That is, registers a library's dependency on another library.
 [Components](./Component.md) from this library will be available for use in HTML as
 `<LibraryName-DepLib-componentName>`,
-where `LibraryName` is the name of the library, `DepyLib` is the name of the registered library,
+where `LibraryName` is the name of the library, `DepLib` is the name of the registered library,
 and `componentName` is the name of the [component](./Component.md) from the registered library.
 
 ```text
