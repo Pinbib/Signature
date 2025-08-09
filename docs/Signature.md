@@ -76,13 +76,15 @@ si.add(MyComponent, 'My-component');
 
 ## Signature.contactWith()
 
-Contacts (triggers the call of the [Component.onContact](./Component.md) hook) with the component by its ref and returns
+Contacts (triggers the call of the [Component.onContact](./Component.md#componentoncontact) hook) with the component by
+its ref and returns
 the result of the call if any.
 
 `Signature.contactWith(name: string, ...props: any[]): any`:
 
 - `name` - This is the ref under which the component to which the call will be made is stored.
-- `...props` - additional parameters that will be passed to the [component's onContact](./Component.md) method.
+- `...props` - additional parameters that will be passed to
+  the [component's onContact](./Component.md#componentoncontact) method.
 
 ```ts
 import {Signature} from 'web-signature';
