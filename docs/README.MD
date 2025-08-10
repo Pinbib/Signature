@@ -4,8 +4,6 @@
 
 This is a primitive and simple component-based declarative rendering framework.
 
-# - [Introduction](./Introduce.md)
-
 # - [Signature](./Signature.md)
 
 - [Component](./Component.md)
