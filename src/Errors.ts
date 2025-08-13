@@ -9,7 +9,8 @@ const errorMessages: Record<Errors, string> = {
 	"ref-collision": "Ref collision detected for ref '#ref' in component '#component'.",
 	"unknown": "An unknown error occurred.",
 	"unknown-from": "An unknown error occurred in component '#from'.",
-	"stack-overflow": "Stack Overflow detected: possible recursive component rendering."
+	"stack-overflow": "Stack Overflow detected: possible recursive component rendering.",
+	"render-async-failed": "Error during asynchronous rendering of the component #component.",
 }
 
 export default errorMessages;

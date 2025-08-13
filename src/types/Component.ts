@@ -26,6 +26,11 @@ export type Ref = {
 	update: () => void;
 }
 
+export type html = {
+	strings: TemplateStringsArray;
+	values: any[];
+}
+
 interface Component {
 	name: string;
 
@@ -55,9 +60,9 @@ interface Component {
 
 	/**
 	 * Returns the component as a string.
-	 * @returns {string} The rendered component as a string.
+	 * @returns {html | Promise<html>} The rendered component as a string.
 	 */
-	render(): string | Promise<string>;
+	render(): html | Promise<html>;
 
 	/**
 	 * Lifecycle hook that is called when the component is initialized.

@@ -7,7 +7,9 @@ type Errors =
 	| "invalid-value-for-property"
 	| "multiple-root-elements"
 	| "ref-collision"
-	| "stack-overflow";
+	| "stack-overflow"
+	| "render-async-failed";
+
 
 export {Errors};
 
@@ -69,6 +71,12 @@ export interface StackOverflowError extends error {
 	err?: Error;
 }
 
+export interface RenderAsyncFailedError extends error {
+	id: "render-async-failed";
+	component: string;
+	err?: Error;
+}
+
 type ErrorUnion =
 	UnknownError
 	| UnknownFromError
@@ -78,6 +86,7 @@ type ErrorUnion =
 	| InvalidValueForPropertyError
 	| MultipleRootElementsError
 	| RefCollisionError
-	| StackOverflowError;
+	| StackOverflowError
+	| RenderAsyncFailedError;
 
 export default ErrorUnion;

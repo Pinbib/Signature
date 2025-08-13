@@ -1,4 +1,4 @@
-import component from "./types/Component.js";
+import component, {html} from "./types/Component.js";
 import Prop from "./types/Prop.js";
 
 import type {Options} from "./types/Component.js";
@@ -17,7 +17,7 @@ export default abstract class Component implements component {
 	readonly props: Record<string, Prop> = {};
 	readonly data: Record<string, string | number | boolean | null> = {};
 
-	abstract render(): string | Promise<string>;
+	abstract render(): html | Promise<html>;
 
 	onInit?(): void {
 	};

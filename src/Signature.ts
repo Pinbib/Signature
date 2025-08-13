@@ -3,6 +3,7 @@ import Ref from "./Ref.js";
 import ErrorUnion from "./types/Errors.js";
 import Errors from "./Errors.js";
 import Library, {LibMeta} from "./Library.js";
+import {html} from "./types/Component";
 
 let _counter = 0;
 
@@ -107,15 +108,6 @@ export default class Signature {
 		return resolve(this.libs);
 	}
 
-	// /**
-	//  * Returns a reference.
-	//  * @param {string} name The name of the reference.
-	//  * @return {Element | undefined} The element associated with the reference, or undefined if it does not exist.
-	//  */
-	// public ref(name: string): Element | undefined {
-	// 	return this.refs[name]?.element;
-	// }
-
 	/**
 	 * Contacts the Component.onContact method through its reference.
 	 * @param {string} name The name of the reference.
@@ -145,7 +137,10 @@ export default class Signature {
 
 		const component = ref.instance;
 
-		let fragment: string | Promise<string> = "";
+		let fragment: html | Promise<html> = {
+			strings: Object.assign([], {raw: []}) as TemplateStringsArray,
+			values: []
+		};
 
 		try {
 			fragment = component.render();
@@ -158,16 +153,16 @@ export default class Signature {
 		const template = document.createElement("template");
 
 		((next: () => void) => {
-			if (typeof fragment === "string") {
-				template.innerHTML = fragment.trim();
-				next();
-			} else if (fragment instanceof Promise) {
-				fragment.then((html: string) => {
-					template.innerHTML = html.trim();
+			if (fragment instanceof Promise) {
+				fragment.then((html: html) => {
+					template.content.appendChild(this.templateToElement(html))
 					next();
 				}).catch((err: Error) => {
 					throw {id: "unknown-from", from: component.name, err: err} as ErrorUnion;
 				});
+			} else if (typeof fragment === "object") {
+				template.content.appendChild(this.templateToElement(fragment));
+				next();
 			}
 		})(() => {
 			if (template.content.children.length !== 1) {
@@ -230,7 +225,7 @@ export default class Signature {
 				message = message.replace(new RegExp(`#${key}`, "gm"), String(err[key as keyof typeof err]));
 			});
 
-			if (err.id in ["unknown", "unknown-from"]) {
+			if (err.id in ["unknown", "unknown-from", "render-async-failed"]) {
 				console.error(`[${err.id}] ${message}`, (err as {
 					err: Error
 				}).err);
@@ -238,6 +233,86 @@ export default class Signature {
 
 			throw "Page rendering was interrupted by Signature due to the above error.";
 		});
+	}
+
+	private templateToString(template: html): string {
+		let body = "";
+
+		for (let i = 0; i < template.strings.length; i++) {
+			body += template.strings[i];
+
+			if (i < template.values.length) {
+				body += `<!--si-mark-${i}-->`
+			}
+		}
+		console.log(body, template)
+		return body;
+	}
+
+	private fillTemplate(template: html, markup: string): HTMLTemplateElement {
+		let body = document.createElement("template");
+		body.innerHTML = markup;
+
+		// Processing si-mark comments
+		(() => {
+			let walker = document.createTreeWalker(body.content, NodeFilter.SHOW_COMMENT);
+
+			let node: ChildNode;
+
+			let marks: ChildNode[] = [];
+
+			while ((node = walker.nextNode() as ChildNode)) {
+				if (/si-mark-\d+/gm.test(node.nodeValue ?? "")) {
+					marks.push(node);
+				}
+			}
+
+			for (const node of marks) {
+				node.replaceWith(
+					document.createTextNode(
+						String(
+							template.values[Number(
+								(
+									(node.nodeValue ?? "").match(/si-mark-(\d+)/m) as string[]
+								)[1]
+							)]
+						)
+					)
+				);
+			}
+		})();
+
+		// Processing si-mark attributes
+		(() => {
+			let walker = document.createTreeWalker(body.content, NodeFilter.SHOW_ELEMENT);
+
+			let node: Element;
+
+			while ((node = walker.nextNode() as Element)) {
+				for (const attr of Array.from(node.attributes)) {
+					if (/<!--si-mark-\d+-->/gm.test(attr.value)) {
+						const match: RegExpMatchArray = attr.value.match(/si-mark-(\d+)/m) as RegExpMatchArray;
+
+						if (match) {
+							node.setAttribute(attr.name, String(template.values[Number(match[1])]))
+						}
+					}
+				}
+			}
+		})();
+
+		return body;
+	}
+
+	private templateToElement(template: html): HTMLElement {
+		const markup: string = this.templateToString(template);
+		const body: HTMLTemplateElement = this.fillTemplate(template, markup);
+
+		if (body.content.children.length !== 1) {
+			throw {id: "multiple-root-elements", elements: body.innerHTML} as ErrorUnion;
+		}
+
+		return (body.content.firstElementChild as HTMLElement);
 	}
 
 	private render(frame: Element | DocumentFragment): void {
@@ -346,7 +421,10 @@ export default class Signature {
 				// Create a template for rendering
 				const body = document.createElement("template");
 
-				let fragment: string | Promise<string> = "";
+				let fragment: html | Promise<html> = {
+					strings: Object.assign([], {raw: []}) as TemplateStringsArray,
+					values: []
+				};
 
 				try {
 					fragment = renderer.render();
@@ -357,30 +435,27 @@ export default class Signature {
 				}
 
 				((next: () => void) => {
-					if (typeof fragment === "string") {
-						body.innerHTML = fragment.trim();
-						next();
-					} else if (fragment instanceof Promise) {
+					if (fragment instanceof Promise) {
 						try {
-							fragment.then((html: string) => {
-								body.innerHTML = html.trim();
+							fragment.then((html: html) => {
+								body.appendChild(this.templateToElement(html));
 								next();
 							}).catch((err: Error) => {
 								throw {id: "unknown-from", from: renderer.name, err: err} as ErrorUnion;
 							});
 						} catch (err) {
-							console.log(1)
+							throw {id: "render-async-failed", component: com, err: err} as ErrorUnion;
 						}
+					} else if (typeof fragment === "object") {
+						body.appendChild(this.templateToElement(fragment));
+						next();
 					}
 				})(() => {
-					if (body.content.children.length > 1) {
-						throw {id: "multiple-root-elements", component: com, elements: body.innerHTML} as ErrorUnion;
-					}
-
 					this.render(body.content);
+
 					renderer.onRender?.(); // lifecycle hook
 
-					const mountEl: Element = body.content.firstElementChild as Element;
+					const mountEl: Element = body.firstElementChild as Element;
 
 					// Processing ref
 					if (el.hasAttribute("ref") || renderer.options.generateRefIfNotSpecified) {
@@ -412,8 +487,8 @@ export default class Signature {
 						};
 					}
 
-					el.replaceWith(body.content);
-
+					el.replaceWith(body.firstElementChild as Element);
+					console.log(el, body)
 					renderer.onMount?.(mountEl); // lifecycle hook
 				});
 			}
