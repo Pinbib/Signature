@@ -59,8 +59,8 @@ interface Component {
 
 
 	/**
-	 * Returns the component as a string.
-	 * @returns {html | Promise<html>} The rendered component as a string.
+	 * Returns the component as a string (template).
+	 * @returns {html | Promise<html>} The rendered component as a string (template).
 	 */
 	render(): html | Promise<html>;
 

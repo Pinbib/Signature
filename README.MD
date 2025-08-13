@@ -63,7 +63,8 @@ the
 ```ts
 import {Signature, Component} from 'web-signature';
 
-class MyComponent extends Component { /* ... */
+class MyComponent extends Component {
+	/* ... */
 }
 
 const si = new Signature();
@@ -72,10 +73,8 @@ si.add(MyComponent, 'my-component');
 // The <my-component> tag will be processed by this class.
 ```
 
-**Although the [component](./docs/Component.md) name is not required, it is recommended to specify it to avoid problems
-when
-building the
-project.**
+**Although the [component](./docs/Component.md) name is not required,
+it is recommended to specify it to avoid problems when building the project.**
 
 To register a [library](./docs/Library.md), the [
 `Signature.register(library: Library)`](./docs/Signature.md#signatureregister)
@@ -119,13 +118,13 @@ and the
 Let's create a simple component that simply displays text:
 
 ```ts
-import {Component} from 'web-signature';
+import {Component, html} from 'web-signature';
 
 class MyComponent extends Component {
 	name = 'my-component';
 
 	render(): string {
-		return '<div>Hello, World!</div>';
+		return html`<div>Hello, World!</div>`;
 	}
 }
 ```
@@ -150,7 +149,7 @@ added to
 the page.
 
 ```ts
-import {Signature, Component} from 'web-signature';
+import {Signature, Component, html} from 'web-signature';
 
 export class Counter extends Component {
 	name = "counter";
@@ -159,7 +158,7 @@ export class Counter extends Component {
 
 	render(): string {
 		// Rendering the component as a button with the current count
-		return `<button type="button">Count is ${this.count}</button>`;
+		return html`<button type="button">Count is ${this.count}</button>`;
 	}
 
 	onMount(el: Element): void {
@@ -212,7 +211,7 @@ Let's make it possible to set the number of steps to increment the counter,
 using [Props](./docs/Prop.md). We need to create a [Prop](./docs/Prop.md) `step` with type `number`.
 
 ```ts
-import {Signature, Component, Prop} from 'web-signature';
+import {Signature, Component, Prop, html} from 'web-signature';
 
 export class StepCounter extends Component {
 	name = "step-counter";
@@ -227,7 +226,7 @@ export class StepCounter extends Component {
 
 	render(): string {
 		// Rendering the component as a button with the current count
-		return `<button type="button">Count is ${this.count}</button>`;
+		return html`<button type="button">Count is ${this.count}</button>`;
 	}
 
 	onMount(el: Element): void {

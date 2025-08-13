@@ -37,13 +37,13 @@ The `Component` class constructor **does not need to be overridden** because it 
 and does not perform any actions, and **adding them will result in an error.**
 
 ```ts
-import {Component} from 'web-signature';
+import {html, Component} from 'web-signature';
 
 class MyComponent extends Component {
 	name = 'MyComponent';
 
 	render() {
-		return `<div>Hello, World!</div>`;
+		return html`<div>Hello, World!</div>`;
 	}
 }
 ```
@@ -64,14 +64,17 @@ class MyComponent extends Component {
 
 This method is mandatory to implement in every component.
 It is responsible for rendering the component's HTML code.
-The `render` method should return a string containing HTML code with only one root element.
+The `render` method should return a string containing HTML processed by function [html()](./html.md) code with only one
+root element.
 
 ```ts
+import {html, Component} from 'web-signature';
+
 class MyComponent extends Component {
 	/* ... */
 
 	render() {
-		return `<div>Hello, World!</div>`;
+		return html`<div>Hello, World!</div>`;
 	}
 }
 ```
@@ -82,11 +85,13 @@ The `content` field is determined when the component is rendered.
 This field contains the HTML code that will be inserted into the body of the component.
 
 ```ts
+import {html, Component} from 'web-signature';
+
 class MyComponent extends Component {
 	name = 'MyComponent';
 
 	render() {
-		return `<div>${this.content}</div>`;
+		return html`<div>${this.content}</div>`;
 	}
 }
 ```
@@ -129,6 +134,8 @@ type Ref = {
 Usage:
 
 ```ts
+import {html, Component} from 'web-signature';
+
 class MyComponent extends Component {
 	name = 'MyComponent';
 
@@ -137,7 +144,7 @@ class MyComponent extends Component {
 	text: string = 'Hello, World!';
 
 	render() {
-		return `<div>${this.text}</div>`;
+		return html`<div>${this.text}</div>`;
 	}
 
 	onMount(el: HTMLElement) {
@@ -189,7 +196,7 @@ That is, if `Component.props.text = new Prop("string")`, then `Component.data` w
 contain the value of the `text` attribute from HTML.
 
 ```ts
-import {Component, Prop} from 'web-signature';
+import {Component, Prop, html} from 'web-signature';
 
 class MyComponent extends Component {
 	name = 'MyComponent';
@@ -200,7 +207,7 @@ class MyComponent extends Component {
 
 	render() {
 		// We use the value of the `text` attribute from `Component.data`
-		return `<div>${this.data?.text}</div>`;
+		return html`<div>${this.data?.text}</div>`;
 	}
 }
 ```
