@@ -245,7 +245,7 @@ export default class Signature {
 				body += `<!--si-mark-${i}-->`
 			}
 		}
-		console.log(body, template)
+		
 		return body;
 	}
 
@@ -488,7 +488,7 @@ export default class Signature {
 					}
 
 					el.replaceWith(body.firstElementChild as Element);
-					console.log(el, body)
+
 					renderer.onMount?.(mountEl); // lifecycle hook
 				});
 			}

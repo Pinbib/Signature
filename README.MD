@@ -29,23 +29,33 @@ npm install
 npm run dev
 ```
 
+* [Signature](#signature)
+* [Quick Start](#quick-start)
+* [Introduction](#introduction)
+	* [Briefly about Signature](#briefly-about-signature)
+	* [About Component](#about-component)
+	* [Quick about the Library](#quick-about-the-library)
+	* [See more here](#see-more-here)
+
 # Introduction
 
 Signature uses four classes as its basis:
 
-- [Signature](./docs/Signature.md) - which processes the entire page and components.
-- [Component](./docs/Component.md) - which defines a standard structure for any element.
-- [Prop](./docs/Prop.md) - which defines properties for components.
-- [Library](./docs/Library.md) - which defines a set of components.
+- [Signature](https://github.com/Pinbib/Signature/docs/Signature.md) - which processes the entire page and components.
+- [Component](https://github.com/Pinbib/Signature/docs/Component.md) - which defines a standard structure for any
+  element.
+- [Prop](https://github.com/Pinbib/Signature/docs/Prop.md) - which defines properties for components.
+- [Library](https://github.com/Pinbib/Signature/docs/Library.md) - which defines a set of components.
 
 In short, Signature allows you to create a website using simple and straightforward components that are easy to
 customize and extend.
 
-## Briefly about [Signature](./docs/Signature.md)
+## Briefly about [Signature](https://github.com/Pinbib/Signature/docs/Signature.md)
 
-The [signature](./docs/Signature.md) is the main class that is responsible for processing the entire page. It is used to
-add [components](./docs/Component.md),
-register [libraries](./docs/Library.md), and essentially render the page.
+The [signature](https://github.com/Pinbib/Signature/docs/Signature.md) is the main class that is responsible for
+processing the entire page. It is used to
+add [components](https://github.com/Pinbib/Signature/docs/Component.md),
+register [libraries](https://github.com/Pinbib/Signature/docs/Library.md), and essentially render the page.
 
 ```ts 
 // Creating a Signature instance
@@ -56,9 +66,11 @@ const si = new Signature();
 ```
 
 To add a component, use the
-[`Signature.add(component: ComponentConstructor, name?: string)`](./docs/Signature.md#signatureadd) method, which takes
+[
+`Signature.add(component: ComponentConstructor, name?: string)`](https://github.com/Pinbib/Signature/docs/Signature.md#signatureadd)
+method, which takes
 the
-[component](./docs/Component.md) class and its name. For example:
+[component](https://github.com/Pinbib/Signature/docs/Component.md) class and its name. For example:
 
 ```ts
 import {Signature, Component} from 'web-signature';
@@ -73,13 +85,13 @@ si.add(MyComponent, 'my-component');
 // The <my-component> tag will be processed by this class.
 ```
 
-**Although the [component](./docs/Component.md) name is not required,
+**Although the [component](https://github.com/Pinbib/Signature/docs/Component.md) name is not required,
 it is recommended to specify it to avoid problems when building the project.**
 
-To register a [library](./docs/Library.md), the [
-`Signature.register(library: Library)`](./docs/Signature.md#signatureregister)
+To register a [library](https://github.com/Pinbib/Signature/docs/Library.md), the [
+`Signature.register(library: Library)`](https://github.com/Pinbib/Signature/docs/Signature.md#signatureregister)
 method is used, which takes an
-instance of the [Library](./docs/Library.md).
+instance of the [Library](https://github.com/Pinbib/Signature/docs/Library.md).
 For example:
 
 ```ts
@@ -91,7 +103,7 @@ si.register(new MyLibrary());
 ```
 
 For rendering the page there is a [
-`Signature.contact(selector: string, callback?)`](./docs/Signature.md#signaturecontact)
+`Signature.contact(selector: string, callback?)`](https://github.com/Pinbib/Signature/docs/Signature.md#signaturecontact)
 method. For example:
 
 ```ts
@@ -104,15 +116,17 @@ si.contact('#app', () => {
 });
 ```
 
-## About [Component](./docs/Component.md)
+## About [Component](https://github.com/Pinbib/Signature/docs/Component.md)
 
 This is an abstract class from which all components inherit. It defines a standard structure for any element.
-It has a main method [`Component.render()`](./docs/Component.md#componentrender), and component lifecycle hooks such
+It has a main method [`Component.render()`](https://github.com/Pinbib/Signature/docs/Component.md#componentrender), and
+component lifecycle hooks such
 as [
-`Component.onMount()`](./docs/Component.md#componentonmount).
+`Component.onMount()`](https://github.com/Pinbib/Signature/docs/Component.md#componentonmount).
 
-To create a component, you need to inherit the [`Component`](./docs/Component.md) class and implement the
-[`Component.render(): string`](./docs/Component.md#componentrender) method
+To create a component, you need to inherit the [`Component`](https://github.com/Pinbib/Signature/docs/Component.md)
+class and implement the
+[`Component.render(): string`](https://github.com/Pinbib/Signature/docs/Component.md#componentrender) method
 and the
 `name` field.
 Let's create a simple component that simply displays text:
@@ -141,8 +155,10 @@ we will need to update it somehow and track events.
 For a component to be able to update, it must have its own ref. Ref - allows you to associate a
 component instance with
 its DOM
-element, if the ref is not specified, the [Signature](./docs/Signature.md) will not remember the component instance.
-And to track events, we will use the [`Component.onMount(el: Element)`](./docs/Component.md#componentonmount) hook,
+element, if the ref is not specified, the [Signature](https://github.com/Pinbib/Signature/docs/Signature.md) will not
+remember the component instance.
+And to track events, we will use the [
+`Component.onMount(el: Element)`](https://github.com/Pinbib/Signature/docs/Component.md#componentonmount) hook,
 which is
 called after the component has been
 added to
@@ -208,7 +224,8 @@ class Counter extends Component {
 ```
 
 Let's make it possible to set the number of steps to increment the counter,
-using [Props](./docs/Prop.md). We need to create a [Prop](./docs/Prop.md) `step` with type `number`.
+using [Props](https://github.com/Pinbib/Signature/docs/Prop.md). We need to create
+a [Prop](https://github.com/Pinbib/Signature/docs/Prop.md) `step` with type `number`.
 
 ```ts
 import {Signature, Component, Prop, html} from 'web-signature';
@@ -264,14 +281,17 @@ Now, when you click the button, the counter will increase by the specified numbe
 
 ## Quick about the Library
 
-The [Library](./docs/Library.md) class allows you to create a set of [components](./docs/Component.md) that can be used
+The [Library](https://github.com/Pinbib/Signature/docs/Library.md) class allows you to create a set
+of [components](https://github.com/Pinbib/Signature/docs/Component.md) that can be used
 in a
 project.
-It has no other purpose than to facilitate the registration of [components](./docs/Component.md)
-in [Signature](./docs/Signature.md),
-and avoiding [component](./docs/Component.md) name collisions by grouping them.
+It has no other purpose than to facilitate the registration
+of [components](https://github.com/Pinbib/Signature/docs/Component.md)
+in [Signature](https://github.com/Pinbib/Signature/docs/Signature.md),
+and avoiding [component](https://github.com/Pinbib/Signature/docs/Component.md) name collisions by grouping them.
 
-Let's create a [library](./docs/Library.md) that will contain our `Counter` and `StepCounter` components:
+Let's create a [library](https://github.com/Pinbib/Signature/docs/Library.md) that will contain our `Counter` and
+`StepCounter` components:
 
 ```ts
 import {Library} from 'web-signature';
@@ -290,8 +310,8 @@ myLibrary.add(StepCounter, "Step-counter");
 export default myLibrary;
 ```
 
-To register the library in [Signature](./docs/Signature.md#signatureregister), use the
-[`Signature.register(library: Library)`](./docs/Signature.md#signatureregister)
+To register the library in [Signature](https://github.com/Pinbib/Signature/docs/Signature.md#signatureregister), use the
+[`Signature.register(library: Library)`](https://github.com/Pinbib/Signature/docs/Signature.md#signatureregister)
 method:
 
 ```ts
@@ -308,11 +328,13 @@ si.register(myLibrary);
 si.contact('#app');
 ```
 
-Now you can use the components from the [library](./docs/Library.md) in your HTML, but all components will be available
+Now you can use the components from the [library](https://github.com/Pinbib/Signature/docs/Library.md) in your HTML, but
+all components will be available
 with
 the prefix
 `ML-`, i.e. `ML-counter` and `ML-step-counter`, the pattern is the library name
-is used as a prefix for the [component](./docs/Component.md) name `[libName]-[componentName]`.
+is used as a prefix for the [component](https://github.com/Pinbib/Signature/docs/Component.md) name
+`[libName]-[componentName]`.
 
 ```html
 
@@ -322,4 +344,4 @@ is used as a prefix for the [component](./docs/Component.md) name `[libName]-[co
 </div>
 ```
 
-## [See more here](./docs)
+## [See more here](https://github.com/Pinbib/Signature/docs)
