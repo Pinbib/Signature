@@ -279,17 +279,20 @@ export default class Signature {
 			}
 
 			for (const node of marks) {
-				node.replaceWith(
-					document.createTextNode(
-						String(
-							template.values[Number(
-								(
-									(node.nodeValue ?? "").match(/si-mark-(\d+)/m) as string[]
-								)[1]
-							)]
-						)
-					)
-				);
+				const value = template.values[Number(
+					(
+						(node.nodeValue ?? "").match(/si-mark-(\d+)/m) as string[]
+					)[1]
+				)];
+
+				if (typeof value === "object" && value.type === "unsafeHTML") {
+					let obj = document.createElement("div");
+					obj.innerHTML = value.value;
+
+					node.replaceWith(obj.firstChild as ChildNode);
+				} else {
+					node.replaceWith(document.createTextNode(String(value)));
+				}
 			}
 		})();
 
@@ -305,7 +308,9 @@ export default class Signature {
 						const match: RegExpMatchArray = attr.value.match(/si-mark-(\d+)/m) as RegExpMatchArray;
 
 						if (match) {
-							node.setAttribute(attr.name, String(template.values[Number(match[1])]))
+							const value = template.values[Number(match[1])];
+							
+							node.setAttribute(attr.name, String(value));
 						}
 					}
 				}

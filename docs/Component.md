@@ -83,15 +83,16 @@ class MyComponent extends Component {
 
 The `content` field is determined when the component is rendered.
 This field contains the HTML code that will be inserted into the body of the component.
+`content` must be processed by the [unsafeHTML()](./html.md#unsafehtml) function.
 
 ```ts
-import {html, Component} from 'web-signature';
+import {html, unsafeHTML, Component} from 'web-signature';
 
 class MyComponent extends Component {
 	name = 'MyComponent';
 
 	render() {
-		return html`<div>${this.content}</div>`;
+		return html`<div>${unsafeHTML(this.content)}</div>`;
 	}
 }
 ```
