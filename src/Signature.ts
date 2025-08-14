@@ -289,7 +289,7 @@ export default class Signature {
 					let obj = document.createElement("div");
 					obj.innerHTML = value.value;
 
-					node.replaceWith(obj.firstChild as ChildNode);
+					node.replaceWith(obj);
 				} else {
 					node.replaceWith(document.createTextNode(String(value)));
 				}
@@ -309,7 +309,7 @@ export default class Signature {
 
 						if (match) {
 							const value = template.values[Number(match[1])];
-							
+
 							node.setAttribute(attr.name, String(value));
 						}
 					}
