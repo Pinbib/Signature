@@ -16,6 +16,7 @@ export default class Signature {
 	private components: Record<string, ComponentConstructor> = {};
 	private refs: Record<string, Ref> = {};
 	private libs: Record<string, LibMeta> = {};
+	private bank: Map<string, HTMLTemplateElement> = new Map<string, HTMLTemplateElement>()
 
 	constructor() {
 	}
@@ -155,13 +156,13 @@ export default class Signature {
 		((next: () => void) => {
 			if (fragment instanceof Promise) {
 				fragment.then((html: html) => {
-					template.content.appendChild(this.templateToElement(html))
+					template.content.appendChild(this.templateToElement(html, component.name))
 					next();
 				}).catch((err: Error) => {
 					throw {id: "unknown-from", from: component.name, err: err} as ErrorUnion;
 				});
 			} else if (typeof fragment === "object") {
-				template.content.appendChild(this.templateToElement(fragment));
+				template.content.appendChild(this.templateToElement(fragment, component.name));
 				next();
 			}
 		})(() => {
@@ -225,6 +226,8 @@ export default class Signature {
 				message = message.replace(new RegExp(`#${key}`, "gm"), String(err[key as keyof typeof err]));
 			});
 
+			if (window.SIGNATURE?.DEV_MODE) console.log(err) // dev
+
 			if (err.id in ["unknown", "unknown-from", "render-async-failed"]) {
 				console.error(`[${err.id}] ${message}`, (err as {
 					err: Error
@@ -245,13 +248,21 @@ export default class Signature {
 				body += `<!--si-mark-${i}-->`
 			}
 		}
-		
+
 		return body;
 	}
 
 	private fillTemplate(template: html, markup: string): HTMLTemplateElement {
-		let body = document.createElement("template");
-		body.innerHTML = markup;
+		let body: HTMLTemplateElement;
+
+		if (this.bank.has(template.strings.join("@@"))) {
+			body = this.bank.get(template.strings.join("@@"))?.cloneNode(true) as HTMLTemplateElement;
+		} else {
+			body = document.createElement("template");
+			body.innerHTML = markup;
+
+			this.bank.set(template.strings.join("@@"), body.cloneNode(true) as HTMLTemplateElement);
+		}
 
 		// Processing si-mark comments
 		(() => {
@@ -304,12 +315,12 @@ export default class Signature {
 		return body;
 	}
 
-	private templateToElement(template: html): HTMLElement {
+	private templateToElement(template: html, component: string): HTMLElement {
 		const markup: string = this.templateToString(template);
 		const body: HTMLTemplateElement = this.fillTemplate(template, markup);
 
 		if (body.content.children.length !== 1) {
-			throw {id: "multiple-root-elements", elements: body.innerHTML} as ErrorUnion;
+			throw {id: "multiple-root-elements", elements: body.innerHTML, component} as ErrorUnion;
 		}
 
 		return (body.content.firstElementChild as HTMLElement);
@@ -438,7 +449,7 @@ export default class Signature {
 					if (fragment instanceof Promise) {
 						try {
 							fragment.then((html: html) => {
-								body.appendChild(this.templateToElement(html));
+								body.appendChild(this.templateToElement(html, com));
 								next();
 							}).catch((err: Error) => {
 								throw {id: "unknown-from", from: renderer.name, err: err} as ErrorUnion;
@@ -447,7 +458,7 @@ export default class Signature {
 							throw {id: "render-async-failed", component: com, err: err} as ErrorUnion;
 						}
 					} else if (typeof fragment === "object") {
-						body.appendChild(this.templateToElement(fragment));
+						body.appendChild(this.templateToElement(fragment, com));
 						next();
 					}
 				})(() => {

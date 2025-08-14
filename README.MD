@@ -320,7 +320,8 @@ export default myLibrary;
 ```
 
 To register the library
-in [Signature](https://github.com/Pinbib/Signature/blob/main/docs/Signature.md#signatureregister), use the
+in [Signature](https://github.com/Pinbib/Signature/blob/main/docs/Signature.md#signatureregister),
+use the
 [
 `Signature.register(library: Library)`](https://github.com/Pinbib/Signature/blob/main/docs/Signature.md#signatureregister)
 method:
