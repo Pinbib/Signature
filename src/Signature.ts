@@ -289,7 +289,10 @@ export default class Signature {
 					let obj = document.createElement("div");
 					obj.innerHTML = value.value;
 
-					node.replaceWith(obj);
+					while (obj.firstChild) {
+						node.parentNode?.insertBefore(obj.firstChild, node);
+					}
+					node.remove();
 				} else {
 					node.replaceWith(document.createTextNode(String(value)));
 				}
