@@ -48,6 +48,11 @@ interface Component {
 	content?: string;
 
 	/**
+	 * Optional groups that the component belongs to.
+	 */
+	groups: string[];
+
+	/**
 	 * Defining component properties.
 	 */
 	props: Record<string, Prop>;

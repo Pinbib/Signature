@@ -8,6 +8,8 @@ export default abstract class Component implements component {
 	abstract readonly name: string;
 	content?: string;
 
+	groups: string[] = [];
+
 	options: Options = {
 		generateRefIfNotSpecified: false,
 	}

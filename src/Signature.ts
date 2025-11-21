@@ -172,6 +172,17 @@ export default class Signature {
 
 			const newElement = template.content.firstElementChild as Element;
 
+			// Preserve old ref attribute
+			let oldRef = ref.element.getAttribute("ref");
+			if (oldRef) {
+				newElement.setAttribute("ref", oldRef);
+			}
+
+			// Preserve si-group attribute
+			if (component.groups.length > 0) {
+				newElement.setAttribute("si-group", component.groups.join(" "));
+			}
+
 			this.render(template.content);
 
 			component.onRender?.(); // lifecycle hook
@@ -475,6 +486,11 @@ export default class Signature {
 					renderer.onRender?.(); // lifecycle hook
 
 					const mountEl: Element = body.firstElementChild as Element;
+
+					// Processing group
+					if (renderer?.groups.length > 0) {
+						mountEl.setAttribute("si-group", renderer.groups.join(" "));
+					}
 
 					// Processing ref
 					if (el.hasAttribute("ref") || renderer.options.generateRefIfNotSpecified) {
