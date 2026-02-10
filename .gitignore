@@ -6,3 +6,8 @@ node_modules
 dist
 test
 bundle
+
+docs/examples/.vscode
+docs/examples/gallery/.vscode
+docs/examples/gallery/node_modules
+docs/examples/gallery/dist

@@ -3,7 +3,8 @@ import Ref from "./Ref.js";
 import ErrorUnion from "./types/Errors.js";
 import Errors from "./Errors.js";
 import Library, {LibMeta} from "./Library.js";
-import {html} from "./types/Component";
+import {html} from "./types/Component.js";
+import Plugin from "./Plugin.js";
 
 let _counter = 0;
 
