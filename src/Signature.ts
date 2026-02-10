@@ -4,6 +4,7 @@ import ErrorUnion from "./types/Errors.js";
 import Errors from "./Errors.js";
 import Library, {LibMeta} from "./Library.js";
 import {html} from "./types/Component.js";
+import MetaPlugin from "./types/MetaPlugin.js";
 import Plugin from "./Plugin.js";
 
 let _counter = 0;
@@ -17,7 +18,10 @@ export default class Signature {
 	private components: Record<string, ComponentConstructor> = {};
 	private refs: Record<string, Ref> = {};
 	private libs: Record<string, LibMeta> = {};
-	private bank: Map<string, HTMLTemplateElement> = new Map<string, HTMLTemplateElement>()
+	private bank: Map<string, HTMLTemplateElement> = new Map<string, HTMLTemplateElement>();
+
+	private $: Record<string, MetaPlugin> = {};
+	private $g: Record<string, unknown> = {};
 
 	constructor() {
 	}
@@ -108,6 +112,25 @@ export default class Signature {
 		};
 
 		return resolve(this.libs);
+	}
+
+	public use(name: string, plugin: Plugin): void {
+		if (this.$[name]) {
+			throw new Error(`Plugin with name ${name} already exists.`);
+		}
+
+		let modules: Record<string, Record<string, unknown>> = {};
+
+		Object.keys(plugin.modules).forEach((key) => {
+			modules[key] = plugin.modules[key]();
+		});
+
+		this.$[name] = {
+			plugin: plugin.define(modules),
+			modules
+		};
+
+		this.$g[name] = this.$[name].plugin;
 	}
 
 	/**
