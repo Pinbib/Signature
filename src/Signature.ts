@@ -376,6 +376,10 @@ export default class Signature {
 			// Find all elements with the component name in the frame
 			for (const el of Array.from(frame.querySelectorAll(com)).concat(Array.from(frame.querySelectorAll(`[si-component="${com}"]`)))) {
 				const renderer: Component = new component();
+
+				renderer.$ = this.$g; // injecting plugins
+				Object.freeze(renderer.$); // prevent plugins from being modified by components
+				
 				renderer.onInit?.(); // lifecycle hook
 
 				if (el instanceof HTMLElement) {

@@ -61,7 +61,8 @@ interface Component {
 	 * The properties of the component.
 	 */
 	data: Record<string, string | number | boolean | null>;
-
+	// todo: make description
+	$: Record<string, unknown>;
 
 	/**
 	 * Returns the component as a string (template).
