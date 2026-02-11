@@ -114,6 +114,12 @@ export default class Signature {
 		return resolve(this.libs);
 	}
 
+	/**
+	 * Registers a plugin in the signature.
+	 * @import {Plugin} from "./Plugin.js";
+	 * @param {string} name The name of the plugin.
+	 * @param {Plugin} plugin The plugin to register.
+	 */
 	public use(name: string, plugin: Plugin): void {
 		if (this.$[name]) {
 			throw new Error(`Plugin with name ${name} already exists.`);

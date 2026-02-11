@@ -20,6 +20,7 @@ import {Component} from 'web-signature';
 	* Working with attributes
 		* [Component.props](#componentprops)
 		* [Component.data](#componentdata)
+	* [Plugins](#component-plugins)
 	* [Component.options](#componentoptions)
 		* [Component.options.generateRefIfNotSpecified](#componentoptionsgeneraterefifnotspecified)
 	* Lifecycle hooks
@@ -212,6 +213,11 @@ class MyComponent extends Component {
 	}
 }
 ```
+
+## Component Plugins
+
+The `Component.$` field contains the installed [plugins](./Plugin.md) that can be used in the component.
+You can refer to the plugin by the name you specified when installing it, for example `this.$.myPlugin`.
 
 ## Component.options
 

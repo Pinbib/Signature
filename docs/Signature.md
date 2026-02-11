@@ -24,6 +24,8 @@ const si = new Signature();
 		* [Signature.register()](#signatureregister)
 		* [Signature.lib()](#signaturelib)
 		* [Signature.libraries()](#signaturelibraries)
+	* Works with Plugins
+		* [Signature.use()](#signatureuse)
 	* [Ref attribute](#ref-attribute)
 
 ## Signature.contact()
@@ -202,6 +204,25 @@ type ResolvedLib = {
 	components: string[],
 	dependencies: Record<string, ResolvedLib>
 };
+```
+
+## Signature.use()
+
+Install the [plugin](./Plugin.md).
+
+`Signature.use(name: string, plugin: Plugin): void`:
+
+- `name` - this is the name of the [plugin](./Plugin.md).
+- `plugin` - this is a [plugin](./Plugin.md).
+
+```ts
+import {Signature} from 'web-signature';
+import MyPlugin from './my-plugin';
+
+const si = new Signature();
+
+// Installing a plugin
+si.use('MyPlugin', new MyPlugin());
 ```
 
 ## ref attribute

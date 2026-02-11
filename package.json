@@ -1,6 +1,6 @@
 {
   "name": "web-signature",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Primitive and fast framework for rendering web interfaces",
   "license": "ISC",
   "author": "PinBib",

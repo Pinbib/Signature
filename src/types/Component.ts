@@ -61,7 +61,10 @@ interface Component {
 	 * The properties of the component.
 	 */
 	data: Record<string, string | number | boolean | null>;
-	// todo: make description
+
+	/**
+	 * Plugins are stored here.
+	 */
 	$: Record<string, unknown>;
 
 	/**

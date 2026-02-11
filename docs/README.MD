@@ -10,3 +10,4 @@ This is a primitive and simple component-based declarative rendering framework.
 - [html](./html.md)
 - [Prop](./Prop.md)
 - [Library](./Library.md)
+- [Plugin](./Plugin.md)
