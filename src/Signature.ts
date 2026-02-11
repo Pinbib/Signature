@@ -379,7 +379,7 @@ export default class Signature {
 
 				renderer.$ = this.$g; // injecting plugins
 				Object.freeze(renderer.$); // prevent plugins from being modified by components
-				
+
 				renderer.onInit?.(); // lifecycle hook
 
 				if (el instanceof HTMLElement) {
@@ -548,6 +548,15 @@ export default class Signature {
 							contact: (...props: any[]) => this.contactWith(refName, ...props),
 							update: () => this.updateRef(refName)
 						};
+					}
+
+					// Copying another attributes from the original element to the new one, with exceptions
+					for (const attr of Array.from(el.attributes)) {
+						const name: string = attr.name;
+
+						if (renderer.props[name] !== undefined || name === "ref" || name === "si-component" || name === "si-group") continue;
+
+						if (!mountEl.hasAttribute(name)) mountEl.setAttribute(name, attr.value);
 					}
 
 					el.replaceWith(body.firstElementChild as Element);
