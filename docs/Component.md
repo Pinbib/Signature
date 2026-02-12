@@ -30,6 +30,7 @@ import {Component} from 'web-signature';
 		* [Component.onContact?()](#componentoncontact)
 		* [Component.onPropsParsed?()](#componentonpropsparsed)
 		* [Component.onPropParsed?()](#componentonpropparsed)
+		* [Component.beforeDestroy?()](#componentbeforedestroy)
 
 ## Creating a component
 
@@ -130,6 +131,11 @@ type Ref = {
 	 * Function to update the component.
 	 */
 	update: () => void;
+
+	/**
+	 * Function to destroy the component.
+	 */
+	destroy: () => void;
 }
 ```
 
@@ -157,6 +163,13 @@ class MyComponent extends Component {
 
 				// Update the component using the ref
 				this.ref.update();
+			});
+
+			el.addEventListener('dblclick', () => {
+				this.text = 'Destroyed!';
+
+				// Destroy the component using the ref
+				this.ref.destroy();
 			});
 		}
 	}
@@ -334,3 +347,16 @@ Lifecycle hook that is called when a [prop](./Prop.md) is parsed.
 
 - `prop` - The prop that was parsed.
 - `value` - The value of the [prop](./Prop.md).
+
+## Component.beforeDestroy?()
+
+Lifecycle hook that is called before the component is destroyed.
+
+```ts
+class MyComponent extends Component {
+	/* ... */
+
+	beforeDestroy() {
+	}
+}
+```

@@ -24,6 +24,11 @@ export type Ref = {
 	 * Function to update the component.
 	 */
 	update: () => void;
+
+	/**
+	 * Function to destroy the component.
+	 */
+	destroy: () => void;
 }
 
 export type html = {
@@ -106,6 +111,11 @@ interface Component {
 	 * @param {string | number | boolean | null} value The value of the prop.
 	 */
 	onPropParsed?(prop: Prop, value: string | number | boolean | null): void;
+
+	/**
+	 * Lifecycle hook that is called before the component is destroyed.
+	 */
+	beforeDestroy?(): void;
 }
 
 export default Component;

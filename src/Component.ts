@@ -40,6 +40,9 @@ export default abstract class Component implements component {
 
 	onPropParsed?(prop: Prop, value: string | number | boolean | null): void {
 	};
+
+	beforeDestroy?(): void {
+	};
 }
 
 export type ComponentConstructor = new () => Component;

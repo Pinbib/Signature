@@ -225,6 +225,22 @@ export default class Signature {
 	}
 
 	/**
+	 * Destroy the element by reference.
+	 * @param {string} name The name of the reference to destroy.
+	 */
+	public destroyByRef(name: string): void {
+		if (!this.refs[name]) {
+			throw new Error(`Ref with name ${name} does not exist.`);
+		}
+
+		this.refs[name].element.remove();
+
+		this.refs[name].instance.beforeDestroy?.(); // lifecycle hook
+
+		delete this.refs[name];
+	}
+
+	/**
 	 * Starts rendering in the specified area.
 	 * @param {string} selector The selector of the element where the signature should be rendered.
 	 * @param {() => void} [callback] Optional callback that will be called after rendering is complete.
@@ -552,7 +568,8 @@ export default class Signature {
 						renderer.ref = {
 							id: refName,
 							contact: (...props: any[]) => this.contactWith(refName, ...props),
-							update: () => this.updateRef(refName)
+							update: () => this.updateRef(refName),
+							destroy: () => this.destroyByRef(refName)
 						};
 					}
 
